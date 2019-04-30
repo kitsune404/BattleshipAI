@@ -1,0 +1,13 @@
+Board: 10 x 10 board labeled [a-j] and [1-10]
+
+Ships:
+Carrier: 5 Spaces
+Battleship: 4 Spaces
+Cruiser: 3 Spaces
+Submarine: 3 Spaces
+Destroyer: 2 Spaces
+
+Each player has 2 versions of the game board. The top board contains
+the locations of the misses (white) and hits (red) made against the other
+player. The bottom board contains the player's ships and the hits the opponent
+has made against the ships.
