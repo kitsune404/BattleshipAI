@@ -1,0 +1,20 @@
+
+PlayGame (driver)
+- while not win (continue moves) 
+
+Game 
+- 4 Gameboards (2 per plane) // (10x10 array of characters)
+- 2 player
+- Check for win (pass in gameboard)
+- defined ships (5 differing sizes)
+- 
+
+Player
+- 2 gameboards
+    - yours and opponents
+- setup (pass in ship type)
+- make move
+- 
+    
+AIPlayer (is a player) //last iteration is added
+- most of AI in make move & setup stuff
