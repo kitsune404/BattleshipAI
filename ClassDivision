@@ -6,6 +6,7 @@ Game
 - 4 Gameboards (2 per plane) // (10x10 array of characters)
 - 2 player
 - Check for win (pass in gameboard)
+	- check for sink?
 - defined ships (5 differing sizes)
 - 
 
