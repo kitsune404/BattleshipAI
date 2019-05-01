@@ -20,7 +20,6 @@ public class Player {
 		}
 	}
 	
-	
 	public String recieveMove(int x, int y) {
 		//TODO: check your board based on opponents move, return string based on hit or miss or sink
 		return "";

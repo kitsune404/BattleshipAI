@@ -20,18 +20,6 @@ public class Game {
 		}
 	}
 
-	public boolean shipsPlaced(String [][] board) {
-		//TODO: check that all ships are placed
-		//return true if all ships are placed on board
-		return false;
-	}
-	
-	public boolean placeShip (int size, char direction, int x1, int y1, int x2, int y2) {
-		//TODO: place the ship, if possible in the desired spot on board
-		//return true if ship is possible and placed, false if it cannot be placed there
-		return false;
-	}
-	
 	/**
 	 * Checks for win
 	 * @param one 

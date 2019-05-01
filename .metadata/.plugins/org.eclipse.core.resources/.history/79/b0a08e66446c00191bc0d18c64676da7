@@ -20,19 +20,6 @@ public class Player {
 		}
 	}
 	
-	
-	public String recieveMove(int x, int y) {
-		//TODO: check your board based on opponents move, return string based on hit or miss or sink
-		return "";
-	}
-	
-	public boolean isHit() {
-		//TODO: determine if move is hit or not
-		//also check that ship is not sunk
-		//change your board
-		return false;
-	}
-	
 	public boolean[] getMyHitShips () {
 		return myHitShips;
 	}

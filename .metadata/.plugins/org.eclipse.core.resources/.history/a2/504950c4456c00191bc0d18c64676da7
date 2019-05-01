@@ -20,7 +20,7 @@ public class Game {
 		}
 	}
 
-	public boolean shipsPlaced(String [][] board) {
+	public boolean shipsPlaced(String [][]) {
 		//TODO: check that all ships are placed
 		//return true if all ships are placed on board
 		return false;
