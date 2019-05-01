@@ -4,7 +4,7 @@ public class Game {
 	public Player playerOne;
 
 	public Player playerTwo;
-
+	
 	public String winner;
 
 	public Game (boolean isAI) {
@@ -31,22 +31,21 @@ public class Game {
 	 * @return if a player has sunk all opponent's ships
 	 */
 	public boolean isWin(Player one, Player two) {
+		//array of booleans
 		int oneCount = 0;
 		int twoCount = 0;
-		for(int i = 0; i < 10; i++) {
-			for(int j = 0; j < 10; j++) {
-				if(one.getOpponentBoard()[i][j] == "x")
-					oneCount++;
-				if(two.getOpponentBoard()[i][j] == "x")
-					twoCount++;
-			}
+		for(int i = 0; i < 5; i++) {
+			if(one.getMyHitShips()[i] == true)
+				oneCount++;
+			if(two.getMyHitShips()[i] == true)
+				twoCount++;
 		}
 		
-		if(oneCount == 15) { //TODO: change number to actual sum of all hits
+		if(oneCount == 5) {
 			winner = "Player One";
 			return true;
 		}
-		if(twoCount == 15) { //TODO: change number to actual sum of all hits
+		if(twoCount == 5) {
 			winner = "Player Two";
 			return true;
 		}
