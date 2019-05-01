@@ -20,7 +20,7 @@ public class Game {
 		}
 		while(!isWin(playerOne, playerTwo))
 		{
-			//TODO: determine gameplay, most likely enter coordinates
+			
 		}
 	}
 

@@ -7,20 +7,10 @@ public class Game {
 
 	public String winner;
 
-	public Game (boolean isAI) {
-		playerOne = new Player();
-		//TODO: Setup board for player 1
-		if(!isAI)
-		{
-			playerTwo = new Player();
-			//TODO: Setup board for each player 2
-		}
-		else {
-			//TODO: Setup AI board
-		}
+	public Game () {
 		while(!isWin(playerOne, playerTwo))
 		{
-			//TODO: determine gameplay, most likely enter coordinates
+
 		}
 	}
 
