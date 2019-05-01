@@ -1,0 +1,63 @@
+
+public class Game {
+
+	public Player playerOne;
+
+	public Player playerTwo;
+	
+	public String winner;
+
+	public Game (boolean isAI) {
+		playerOne = new Player();
+		//TODO: Setup board for player 1
+		if(!isAI)
+		{
+			playerTwo = new Player();
+			//TODO: Setup board for each player 2
+		}
+		else {
+			//TODO: Setup AI board
+		}
+	}
+
+	public boolean shipsPlaced(String [][] board) {
+		//TODO: check that all ships are placed
+		//return true if all ships are placed on board
+		return false;
+	}
+	
+	public boolean placeShip (int size, char direction, int x1, int y1, int x2, int y2) {
+		//TODO: place the ship, if possible in the desired spot on board
+		//return true if ship is possible and placed, false if it cannot be placed there
+		return false;
+	}
+	
+	/**
+	 * Checks for win
+	 * @param one 
+	 * @param two
+	 * @return if a player has sunk all opponent's ships
+	 */
+	public boolean isWin() {
+		//array of booleans
+		int oneCount = 0;
+		int twoCount = 0;
+		for(int i = 0; i < 5; i++) {
+			if(playerOne.getMyHitShips()[i] == true)
+				oneCount++;
+			if(playerTwo.getMyHitShips()[i] == true)
+				twoCount++;
+		}
+		
+		if(oneCount == 5) {
+			winner = "Player One";
+			return true;
+		}
+		if(twoCount == 5) {
+			winner = "Player Two";
+			return true;
+		}
+		return false;
+	}
+
+}

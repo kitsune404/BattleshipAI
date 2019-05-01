@@ -26,7 +26,7 @@ public class Game {
 		return false;
 	}
 	
-	public boolean placeShip (int size, char direction, int x1, int y1, int x2, int y2) {
+	public boolean placeShip (int size, char direction, int x1, int y1, int x2, int y2, int player) {
 		//TODO: place the ship, if possible in the desired spot on board
 		//return true if ship is possible and placed, false if it cannot be placed there
 		return false;

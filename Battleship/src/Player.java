@@ -23,14 +23,20 @@ public class Player {
 	
 	public String recieveMove(int x, int y) {
 		//TODO: check your board based on opponents move, return string based on hit or miss or sink
-		return "";
+		if(isHit(x, y)) {
+			//check if sink is sunk?
+		}
+			
+		return "miss";
 	}
 	
-	public boolean isHit() {
+	public boolean isHit(int x, int y) {
 		//TODO: determine if move is hit or not
-		//also check that ship is not sunk
-		//change your board
-		return false;
+		if(myBoard[x][y]== "~" || myBoard[x][y]== "x") {
+			//Do we want to change the persons own board to show where the hit was? then we can have the other player change their opponent board?
+			return false;
+		}
+		return true;
 	}
 	
 	public boolean[] getMyHitShips () {
