@@ -17,14 +17,13 @@ public class Driver {
 		boolean turn = true;
 		
 		while(!letsPlay.isWin()) {
-			//TODO: gameplay (allow both players to guess)
 			if(turn) {
 				//player one's turn
 				System.out.print("Player One, guess");
 			} else {
 				//player two's turn
 			}
-			
+			//TODO: gameplay (allow both players to guess)
 		}
 	}
 }
