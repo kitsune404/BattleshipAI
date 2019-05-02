@@ -9,14 +9,14 @@ public class Game {
 
 	public Game (boolean isAI) {
 		playerOne = new Player();
-		//TODO: Setup player 1
+		//TODO: Setup board for player 1
 		if(!isAI)
 		{
 			playerTwo = new Player();
-			//TODO: Setup player 2
+			//TODO: Setup board for each player 2
 		}
 		else {
-			//TODO: Setup AI player
+			//TODO: Setup AI board
 		}
 	}
 

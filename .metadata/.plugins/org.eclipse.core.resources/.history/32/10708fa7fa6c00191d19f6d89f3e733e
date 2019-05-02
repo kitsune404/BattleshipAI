@@ -4,7 +4,7 @@ public class Player {
 	/** The board of the player*/
 	private String [][] myBoard;
 	
-	private boolean [] myHitShips; //Carrier 'C' (5), Battleship 'B' (4), Cruiser 'U' (3), Sub 'S' (3), Destroyer 'D' (2)
+	private boolean [] myHitShips;
 	
 	/** The board of the opponent */
 	private String [][] opponentBoard;

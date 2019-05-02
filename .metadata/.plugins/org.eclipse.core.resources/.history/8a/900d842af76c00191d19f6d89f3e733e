@@ -5,24 +5,17 @@ public class Driver {
 		Game letsPlay = new Game(false);
 		//TODO: have both players place ships
 		System.out.println("Player 1, place your ships.");
-		while(!letsPlay.shipsPlaced(letsPlay.playerOne.getMyBoard())) {
+		while(letsPlay.shipsPlaced(letsPlay.playerOne.getMyBoard())) {
 			
 		}
 		
 		System.out.println("Player 2, place your ships.");
-		while(!letsPlay.shipsPlaced(letsPlay.playerTwo.getMyBoard())) {
+		while(letsPlay.shipsPlaced(letsPlay.playerTwo.getMyBoard())) {
 			
 		}	
 		
-		boolean turn = true;
 		
 		while(!letsPlay.isWin()) {
-			if(turn) {
-				//player one's turn
-				System.out.print("Player One, guess");
-			} else {
-				//player two's turn
-			}
 			//TODO: gameplay (allow both players to guess)
 		}
 	}

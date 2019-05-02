@@ -4,7 +4,7 @@ public class Player {
 	/** The board of the player*/
 	private String [][] myBoard;
 	
-	private boolean [] myHitShips; //Carrier 'C' (5), Battleship 'B' (4), Cruiser 'U' (3), Sub 'S' (3), Destroyer 'D' (2)
+	private boolean [] myHitShips;
 	
 	/** The board of the opponent */
 	private String [][] opponentBoard;
@@ -37,22 +37,6 @@ public class Player {
 			return false;
 		}
 		return true;
-	}
-	
-	public String printBoard(String[][] board) {
-		String toPrint = "";
-		for(int i = 0; i < board.length; i++) {
-			for (int j = 0; j <board.length; j++) {
-				toPrint += board[i][j] + " ";
-			}
-			toPrint += "\n";
-		}
-		return toPrint;
-	}
-	
-	public void setBoardTile(int x, int y, String type)
-	{
-		myBoard[x][y] = type;
 	}
 	
 	public boolean[] getMyHitShips () {

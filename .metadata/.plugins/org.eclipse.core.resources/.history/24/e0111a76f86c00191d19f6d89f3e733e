@@ -9,60 +9,25 @@ public class Game {
 
 	public Game (boolean isAI) {
 		playerOne = new Player();
-		//TODO: Setup player 1
+		//TODO: Setup board for player 1
 		if(!isAI)
 		{
 			playerTwo = new Player();
-			//TODO: Setup player 2
+			//TODO: Setup board for each player 2
 		}
 		else {
-			//TODO: Setup AI player
+			//TODO: Setup AI board
 		}
 	}
 
-	/**
-	 * are all the ships on the board?
-	 * @param board
-	 * @return
-	 */
 	public boolean shipsPlaced(String [][] board) {
-		int c = 0; // Carrier = "C", 5 spaces
-		int b = 0; // Battleship = "B", 4 spaces
-		int u = 0; // Cruiser = "U", 3 spaces
-		int s = 0;// Submarine = "S", 3 spaces
-		int d = 0;// Destroyer = "D", 2 spaces
-		
-		for(int i = 0; i < board.length; i++) {
-			for(int j = 0; j < board.length; j++) {
-				if(board[i][j]=="C")
-					c++;
-				else if(board[i][j]=="B")
-					b++;
-				else if(board[i][j]=="U")
-					u++;
-				else if(board[i][j]=="S")
-					s++;
-				else if(board[i][j]=="D")
-					d++;
-			}
-		}
-		if(c==5 && b ==4 && u ==3 && s==3 && d==2)
-			return true;
+		//TODO: check that all ships are placed
+		//return true if all ships are placed on board
 		return false;
-	}
-	
-	public String leftToPlace(String [][] board) {
-		//TODO: return next ship to place? or which ship to place? IDK
-		return "";
 	}
 	
 	public boolean placeShip (int size, char direction, int x1, int y1, int x2, int y2, int player) {
 		//TODO: place the ship, if possible in the desired spot on board
-		if(direction == 'V') { //vertical
-			
-		} else if (direction == 'H') { // horizontal
-			
-		}
 		//return true if ship is possible and placed, false if it cannot be placed there
 		return false;
 	}
