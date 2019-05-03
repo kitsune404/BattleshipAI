@@ -51,10 +51,6 @@ public class Driver {
 		}
 	}
 	
-	/**
-	 * Used to place ships per player
-	 * @param player
-	 */
 	public static void chooseShips(int player){
 		
 		boolean isTest = true;

@@ -1,10 +1,6 @@
 
 import java.util.Scanner;
-/**
- * Driver class
- * @author meganlahm
- * Handles gameplay via the Game object
- */
+
 public class Driver {
 
 	private static Game letsPlay;
@@ -51,10 +47,6 @@ public class Driver {
 		}
 	}
 	
-	/**
-	 * Used to place ships per player
-	 * @param player
-	 */
 	public static void chooseShips(int player){
 		
 		boolean isTest = true;

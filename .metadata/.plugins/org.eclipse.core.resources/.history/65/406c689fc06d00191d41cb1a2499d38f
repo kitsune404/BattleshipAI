@@ -1,10 +1,5 @@
 import java.util.ArrayList;
 
-/**
- * Game class
- * @author meganlahm
- * handles information about the game
- */
 public class Game {
 	
 	public ArrayList<Player> players;
@@ -24,17 +19,11 @@ public class Game {
 	}
 	
 	public boolean placeShip (int ship, char direction, char x, int y, int player) {
+		//TODO: place the ship, if possible in the desired spot on board
 		int[] coords = convertCoord(x,y);
 		return players.get(player).placeShip(ship, direction, coords[0], coords[1]);
 	}
 	
-	/**
-	 * Check if attack is a valid move
-	 * @param posX
-	 * @param posY
-	 * @param player
-	 * @return
-	 */
 	public String tryAttack(char posX, int posY, int player){
 		int[] coords = convertCoord(posX,posY);
 		String output = "Invalid Move, Try Again";
@@ -49,12 +38,6 @@ public class Game {
 		return output;
 	}
 	
-	/**
-	 * convert coordinates from char to int for board purposes
-	 * @param x
-	 * @param y
-	 * @return
-	 */
 	public int[] convertCoord(char x, int y){
 		int[] coords = {0,0};
 		Character.toUpperCase(x);

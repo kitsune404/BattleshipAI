@@ -49,12 +49,6 @@ public class Game {
 		return output;
 	}
 	
-	/**
-	 * convert coordinates from char to int for board purposes
-	 * @param x
-	 * @param y
-	 * @return
-	 */
 	public int[] convertCoord(char x, int y){
 		int[] coords = {0,0};
 		Character.toUpperCase(x);

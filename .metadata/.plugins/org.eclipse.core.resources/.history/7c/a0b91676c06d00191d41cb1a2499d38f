@@ -17,10 +17,8 @@ public class Player {
 			{"Carrier","Battleship","Cruiser","Submarine","Destroyer"};
 	
 	
-	/**
-	 * Constructor
-	 */
 	public Player () {
+		//Set up boards
 		myBoard = new char [10][10];
 		opponentBoard = new char [10][10];
 		myHitShips = new boolean[5];
@@ -38,14 +36,10 @@ public class Player {
 				opponentBoard[posX][posY] == '~');
 	}
 	
-	/**
-	 * check your board based on opponents move, return string based on hit or miss or sink
-	 * @param x
-	 * @param y
-	 * @return
-	 */
 	public String receiveMove(int x, int y) {
+		//check your board based on opponents move, return string based on hit or miss or sink
 		if(isHit(x, y)) {
+			//check if sink is sunk?
 			char shipHit = myBoard[x][y];
 			setBoardTile(x,y,'x');
 			for(int i = 0; i < myBoard.length; i++){
