@@ -1,9 +1,4 @@
 
-/**
- * Player class
- * @author meganlahm
- * Handles the player's boards and moves
- */
 public class Player {
 
 	/** The board of the player*/
@@ -12,16 +7,12 @@ public class Player {
 	/** The board of the opponent */
 	private char [][] opponentBoard;
 	
-	/** Keeps track of sunken ships */
 	private boolean [] myHitShips; //Carrier 'C' (5), Battleship 'B' (4), Cruiser 'U' (3), Sub 'S' (3), Destroyer 'D' (2)
 	
-	/** The chars representing each ship */
 	public static final char[] SHIPICONS = {'C','B','U','S','D'};
 	
-	/** The size of each ship */
 	public static final int[] SHIPSIZES = {5,4,3,3,2};
 	
-	/** The name of each ship */
 	public static final String[] SHIPNAMES = 
 			{"Carrier","Battleship","Cruiser","Submarine","Destroyer"};
 	
@@ -41,7 +32,6 @@ public class Player {
 		}
 	}
 	
-	/** Checks if coordinates are in bounds */
 	public boolean isValidAttack(int posX, int posY){		
 		return (posX > -1 && posX < 10 &&
 				posY > -1 && posY < 10 &&
@@ -78,12 +68,6 @@ public class Player {
 		return "miss";
 	}
 	
-	/**
-	 * returns if the move is a hit or not
-	 * @param x
-	 * @param y
-	 * @return
-	 */
 	public boolean isHit(int x, int y) {
 		//determine if move is hit or not
 		if(myBoard[x][y]== '~' || myBoard[x][y]== 'x') {
@@ -92,11 +76,6 @@ public class Player {
 		return true;
 	}
 	
-	/**
-	 * returns a string of the board passed in
-	 * @param board
-	 * @return
-	 */
 	private String printBoard(char[][] board) {
 		String toPrint = "\t";
 		for(int i = 0; i < board.length; i++){
@@ -114,14 +93,6 @@ public class Player {
 	}
 	
 	
-	/**
-	 * Places specific ship in the direction from the coordinate specified
-	 * @param ship
-	 * @param dir
-	 * @param x
-	 * @param y
-	 * @return
-	 */
 	public boolean placeShip(int ship, char dir, int x, int y){
 		Character.toUpperCase(dir);
 		if(dir == 'V') { //vertical
@@ -151,43 +122,37 @@ public class Player {
 				}
 			}
 		}
-		//return true if ship is possible and placed
+		//return true if ship is possible and placed, false if it cannot be placed there
 		return true;
 	}
 	
-	/** Prints the player's board */
+	
 	public String printMyBoard(){
 		return printBoard(myBoard);
 	}
 	
-	/** Prints the opponent's board */
 	public String printOpponentBoard(){
 		return printBoard(opponentBoard);
 	}
 	
-	/** places the specified tile on player's board */
 	public void setBoardTile(int x, int y, char type)
 	{
 		myBoard[x][y] = type;
 	}
 	
-	/** places the specified tile on opponent's board */
 	public void setOpponentBoardTile(int x, int y, char type)
 	{
 		opponentBoard[x][y] = type;
 	}
 	
-	/** returns the array of sunken ships */
 	public boolean[] getMyHitShips () {
 		return myHitShips;
 	}
 	
-	/** returns the player's board */
 	public char [][] getMyBoard() {
 		return myBoard;
 	}
 	
-	/** returns the opponent's board */
 	public char [][] getOpponentBoard() {
 		return opponentBoard;
 	}

@@ -7,13 +7,10 @@ import java.util.ArrayList;
  */
 public class Game {
 	
-	/** Stores the players of the game */
 	public ArrayList<Player> players;
 	
-	/** The winner var */
 	public String winner;
 	
-	/** Constructor */
 	public Game (boolean isAI) {
 		players = new ArrayList<Player>();
 		players.add(new Player());
@@ -26,15 +23,6 @@ public class Game {
 		}
 	}
 	
-	/**
-	 * Determines where the ship is placed
-	 * @param ship
-	 * @param direction
-	 * @param x
-	 * @param y
-	 * @param player
-	 * @return
-	 */
 	public boolean placeShip (int ship, char direction, char x, int y, int player) {
 		int[] coords = convertCoord(x,y);
 		return players.get(player).placeShip(ship, direction, coords[0], coords[1]);

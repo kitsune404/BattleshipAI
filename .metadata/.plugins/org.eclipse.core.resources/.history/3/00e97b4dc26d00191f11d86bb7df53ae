@@ -1,9 +1,4 @@
 
-/**
- * Player class
- * @author meganlahm
- * Handles the player's boards and moves
- */
 public class Player {
 
 	/** The board of the player*/

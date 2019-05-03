@@ -7,7 +7,6 @@ import java.util.Scanner;
  */
 public class Driver {
 
-	/** The game object */
 	private static Game letsPlay;
 	
 	private static Scanner input;
@@ -46,7 +45,6 @@ public class Driver {
 		}
 	}
 	
-	/** Clears the screen so next player can move */
 	public static void clearScreen() { 
 		for(int i = 0; i < 10; i++){
 			System.out.println("");
