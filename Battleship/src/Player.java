@@ -2,68 +2,153 @@
 public class Player {
 
 	/** The board of the player*/
-	private String [][] myBoard;
+	private char [][] myBoard;
+	
+	/** The board of the opponent */
+	private char [][] opponentBoard;
 	
 	private boolean [] myHitShips; //Carrier 'C' (5), Battleship 'B' (4), Cruiser 'U' (3), Sub 'S' (3), Destroyer 'D' (2)
 	
-	/** The board of the opponent */
-	private String [][] opponentBoard;
+	public static final char[] SHIPICONS = {'C','B','U','S','D'};
+	
+	public static final int[] SHIPSIZES = {5,4,3,3,2};
+	
+	public static final String[] SHIPNAMES = 
+			{"Carrier","Battleship","Cruiser","Submarine","Destroyer"};
+	
 	
 	public Player () {
 		//Set up boards
-		myBoard = new String [10][10];
-		opponentBoard = new String [10][10];
+		myBoard = new char [10][10];
+		opponentBoard = new char [10][10];
 		myHitShips = new boolean[5];
 		for(int i = 0; i < 10; i++) {
-			myBoard [i][i] = "~";
-			opponentBoard [i][i] = "~";
+			for(int j = 0; j < 10; j++){
+				myBoard [i][j] = '~';
+				opponentBoard [i][j] = '~';
+			}
 		}
 	}
 	
+	public boolean isValidAttack(int posX, int posY){		
+		return (posX > -1 && posX < 10 &&
+				posY > -1 && posY < 10 &&
+				opponentBoard[posX][posY] == '~');
+	}
 	
-	public String recieveMove(int x, int y) {
-		//TODO: check your board based on opponents move, return string based on hit or miss or sink
+	public String receiveMove(int x, int y) {
+		//check your board based on opponents move, return string based on hit or miss or sink
 		if(isHit(x, y)) {
 			//check if sink is sunk?
+			char shipHit = myBoard[x][y];
+			setBoardTile(x,y,'x');
+			for(int i = 0; i < myBoard.length; i++){
+				for(int j = 0; j < myBoard.length; j++){
+					if(myBoard[i][j] == shipHit){
+						return "hit";
+					}
+				}
+			}
+			
+			for(int i = 0; i < SHIPICONS.length; i++){
+				if(shipHit == SHIPICONS[i]){
+					myHitShips[i] = true;
+					return SHIPNAMES[i] + " Sunk";
+				}
+			}
+			return "error";
 		}
 			
 		return "miss";
 	}
 	
 	public boolean isHit(int x, int y) {
-		//TODO: determine if move is hit or not
-		if(myBoard[x][y]== "~" || myBoard[x][y]== "x") {
+		//determine if move is hit or not
+		if(myBoard[x][y]== '~' || myBoard[x][y]== 'x') {
 			//Do we want to change the persons own board to show where the hit was? then we can have the other player change their opponent board?
 			return false;
 		}
 		return true;
 	}
 	
-	public String printBoard(String[][] board) {
-		String toPrint = "";
+	private String printBoard(char[][] board) {
+		String toPrint = "\t";
+		for(int i = 0; i < board.length; i++){
+			toPrint += ((char)(65 + i) + " ");
+		}
+		toPrint += "\n";
 		for(int i = 0; i < board.length; i++) {
+			toPrint += (i + 1) + "\t";
 			for (int j = 0; j <board.length; j++) {
-				toPrint += board[i][j] + " ";
+				toPrint += board[j][i] + " ";
 			}
 			toPrint += "\n";
 		}
 		return toPrint;
 	}
 	
-	public void setBoardTile(int x, int y, String type)
+	
+	public boolean placeShip(int ship, char dir, int x, int y){
+		Character.toUpperCase(dir);
+		if(dir == 'V') { //vertical
+			if(x < 0 || x > 9 || y < 0 || y > 10 - SHIPSIZES[ship]){
+				return false;
+			}else{
+				for(int i = 0; i < SHIPSIZES[ship]; i++){
+					if(myBoard[x][y + i] != '~'){
+						return false;
+					}
+				}
+				for(int i = 0; i < SHIPSIZES[ship]; i++){
+					myBoard[x][y + i] = SHIPICONS[ship];
+				}
+			}
+		} else if (dir == 'H') { // horizontal
+			if(y < 0 || y > 9 || x < 0 || x > 10 - SHIPSIZES[ship]){
+				return false;
+			}else{
+				for(int i = 0; i < SHIPSIZES[ship]; i++){
+					if(myBoard[x + i][y] != '~'){
+						return false;
+					}
+				}
+				for(int i = 0; i < SHIPSIZES[ship]; i++){
+					myBoard[x+i][y] = SHIPICONS[ship];
+				}
+			}
+		}
+		//return true if ship is possible and placed, false if it cannot be placed there
+		return true;
+	}
+	
+	
+	public String printMyBoard(){
+		return printBoard(myBoard);
+	}
+	
+	public String printOpponentBoard(){
+		return printBoard(opponentBoard);
+	}
+	
+	public void setBoardTile(int x, int y, char type)
 	{
 		myBoard[x][y] = type;
+	}
+	
+	public void setOpponentBoardTile(int x, int y, char type)
+	{
+		opponentBoard[x][y] = type;
 	}
 	
 	public boolean[] getMyHitShips () {
 		return myHitShips;
 	}
 	
-	public String [][] getMyBoard() {
+	public char [][] getMyBoard() {
 		return myBoard;
 	}
 	
-	public String [][] getOpponentBoard() {
+	public char [][] getOpponentBoard() {
 		return opponentBoard;
 	}
 }

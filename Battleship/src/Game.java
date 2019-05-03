@@ -1,71 +1,53 @@
+import java.util.ArrayList;
 
 public class Game {
-
-	public Player playerOne;
-
-	public Player playerTwo;
+	
+	public ArrayList<Player> players;
 	
 	public String winner;
-
+	
 	public Game (boolean isAI) {
-		playerOne = new Player();
+		players = new ArrayList<Player>();
+		players.add(new Player());
 		//TODO: Setup player 1
 		if(!isAI)
 		{
-			playerTwo = new Player();
+			players.add(new Player());
 			//TODO: Setup player 2
 		}
 		else {
 			//TODO: Setup AI player
 		}
 	}
-
-	/**
-	 * are all the ships on the board?
-	 * @param board
-	 * @return
-	 */
-	public boolean shipsPlaced(String [][] board) {
-		int c = 0; // Carrier = "C", 5 spaces
-		int b = 0; // Battleship = "B", 4 spaces
-		int u = 0; // Cruiser = "U", 3 spaces
-		int s = 0;// Submarine = "S", 3 spaces
-		int d = 0;// Destroyer = "D", 2 spaces
-		
-		for(int i = 0; i < board.length; i++) {
-			for(int j = 0; j < board.length; j++) {
-				if(board[i][j]=="C")
-					c++;
-				else if(board[i][j]=="B")
-					b++;
-				else if(board[i][j]=="U")
-					u++;
-				else if(board[i][j]=="S")
-					s++;
-				else if(board[i][j]=="D")
-					d++;
+	
+	public boolean placeShip (int ship, char direction, char x, int y, int player) {
+		//TODO: place the ship, if possible in the desired spot on board
+		int[] coords = convertCoord(x,y);
+		return players.get(player).placeShip(ship, direction, coords[0], coords[1]);
+	}
+	
+	public String tryAttack(char posX, int posY, int player){
+		int[] coords = convertCoord(posX,posY);
+		String output = "Invalid Move, Try Again";
+		if(players.get(player).isValidAttack(coords[0], coords[1])){
+			output = players.get((player + 1) % 2).receiveMove(coords[0], coords[1]);
+			if(output.equals("miss")){
+				players.get(player).setOpponentBoardTile(coords[0], coords[1], 'o');
+			}else{
+				players.get(player).setOpponentBoardTile(coords[0], coords[1], 'x');
 			}
 		}
-		if(c==5 && b ==4 && u ==3 && s==3 && d==2)
-			return true;
-		return false;
+		return output;
 	}
 	
-	public String leftToPlace(String [][] board) {
-		//TODO: return next ship to place? or which ship to place? IDK
-		return "";
+	public int[] convertCoord(char x, int y){
+		int[] coords = {0,0};
+		Character.toUpperCase(x);
+		coords[0] = (int)x - 65;
+		coords[1] = y - 1;
+		return coords;
 	}
 	
-	public boolean placeShip (int size, char direction, int x1, int y1, int x2, int y2, int player) {
-		//TODO: place the ship, if possible in the desired spot on board
-		if(direction == 'V') { //vertical
-			
-		} else if (direction == 'H') { // horizontal
-			
-		}
-		//return true if ship is possible and placed, false if it cannot be placed there
-		return false;
-	}
 	
 	/**
 	 * Checks for win
@@ -77,9 +59,9 @@ public class Game {
 		int oneCount = 0;
 		int twoCount = 0;
 		for(int i = 0; i < 5; i++) {
-			if(playerOne.getMyHitShips()[i] == true)
+			if(players.get(0).getMyHitShips()[i] == true)
 				oneCount++;
-			if(playerTwo.getMyHitShips()[i] == true)
+			if(players.get(1).getMyHitShips()[i] == true)
 				twoCount++;
 		}
 		
