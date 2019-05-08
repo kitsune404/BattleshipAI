@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -34,7 +35,7 @@ public class Main extends Application {
 			letsPlay = new Game(true);
 			
 			GridPane root = new GridPane();
-			//root.setBackground();
+			root.setStyle("-fx-background-color: #557ea0;");
 			
 			Scene scene = new Scene(root, 760, 740);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -42,12 +43,14 @@ public class Main extends Application {
 			opponentBoardArr = new Circle[10][10];
 			myBoardArr = new Circle[10][10];
 			GridPane title1GP = new GridPane();
+			title1GP.add(new Label("Opponent's Board:"), 0, 0);
 			GridPane title2GP = new GridPane();
+			title2GP.add(new Label("Your Board:"), 0, 0);
 			
-			//root.add(title1GP, 0, 1); //Do something for title
-			root.add(topPane(), 0, 0);
-			//root.add(title2GP, 0, 1); //Do something for title
-			root.add(bottomPane(), 0, 2);
+			root.add(title1GP, 0, 0);
+			root.add(topPane(), 0, 1);
+			root.add(title2GP, 0, 2);
+			root.add(bottomPane(), 0, 3);
 			
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("Battleship");
@@ -62,11 +65,13 @@ public class Main extends Application {
 		topGP = new GridPane();
 		
 		for(int i = 0; i < 10; i++) {
+			topGP.add(new Label(" "+(char)(i+65)+ " "), i+1,0);
 			for(int j = 0; j < 10; j++) {
-				opponentBoardArr[i][j] = new Circle(18);
+				topGP.add(new Label(" "+(j+1)+ " "), 0,j+1);
+				opponentBoardArr[i][j] = new Circle(16);
 				opponentBoardArr[i][j].setFill(Color.BURLYWOOD);
 				//TODO: make event handler for buttons
-				topGP.add(opponentBoardArr[i][j], j, i);
+				topGP.add(opponentBoardArr[i][j], j+1, i+1);
 			}
 		}
 		
@@ -78,11 +83,13 @@ public class Main extends Application {
 		bottomGP = new GridPane();
 		
 		for(int i = 0; i < 10; i++) {
+			bottomGP.add(new Label(" "+(char)(i+65)+ " "), i+1,0);
 			for(int j = 0; j < 10; j++) {
-				myBoardArr[i][j] = new Circle(18);
+				bottomGP.add(new Label(" "+(j+1)+ " "), 0,j+1);
+				myBoardArr[i][j] = new Circle(16);
 				myBoardArr[i][j].setFill(Color.DARKGREY);
 				//TODO: make event handler for buttons
-				bottomGP.add(myBoardArr[i][j], j, i);
+				bottomGP.add(myBoardArr[i][j], j+1, i+1);
 			}
 		}
 		
