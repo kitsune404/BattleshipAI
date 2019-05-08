@@ -8,13 +8,13 @@ package application;
 public class Player {
 
 	/** The board of the player*/
-	private char [][] myBoard;
+	protected char [][] myBoard;
 	
 	/** The board of the opponent */
-	private char [][] opponentBoard;
+	protected char [][] opponentBoard;
 	
 	/** Keeps track of sunken ships */
-	private boolean [] myHitShips; //Carrier 'C' (5), Battleship 'B' (4), Cruiser 'U' (3), Sub 'S' (3), Destroyer 'D' (2)
+	protected boolean [] myHitShips; //Carrier 'C' (5), Battleship 'B' (4), Cruiser 'U' (3), Sub 'S' (3), Destroyer 'D' (2)
 	
 	/** The chars representing each ship */
 	public static final char[] SHIPICONS = {'C','B','U','S','D'};
