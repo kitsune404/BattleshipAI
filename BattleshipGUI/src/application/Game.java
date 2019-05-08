@@ -1,5 +1,4 @@
 package application;
-
 import java.util.ArrayList;
 
 /**
@@ -25,6 +24,7 @@ public class Game {
 		}
 		else {
 			//TODO: Setup AI player
+			players.add(new AI());
 		}
 	}
 	
@@ -42,6 +42,21 @@ public class Game {
 		return players.get(player).placeShip(ship, direction, coords[0], coords[1]);
 	}
 	
+	
+	/**
+	 * Determines where the ship is placed
+	 * @param ship
+	 * @param direction
+	 * @param x
+	 * @param y
+	 * @param player
+	 * @return
+	 */
+	public boolean placeShip (int ship, char direction, int x, int y, int player) {
+		return players.get(player).placeShip(ship, direction, x, y);
+	}
+	
+	
 	/**
 	 * Check if attack is a valid move
 	 * @param posX
@@ -58,6 +73,19 @@ public class Game {
 				players.get(player).setOpponentBoardTile(coords[0], coords[1], 'o');
 			}else{
 				players.get(player).setOpponentBoardTile(coords[0], coords[1], 'x');
+			}
+		}
+		return output;
+	}
+	
+	public String tryAttack(int posX, int posY, int player){
+		String output = "Invalid Move, Try Again";
+		if(players.get(player).isValidAttack(posX, posY)){
+			output = players.get((player + 1) % 2).receiveMove(posX, posY);
+			if(output.equals("miss")){
+				players.get(player).setOpponentBoardTile(posX, posY, 'o');
+			}else{
+				players.get(player).setOpponentBoardTile(posX, posY, 'x');
 			}
 		}
 		return output;
