@@ -12,7 +12,7 @@ import javafx.scene.shape.Circle;
 /**
  * The main class of the GUI
  * @author meganlahm
- *
+ * @author Dylan Prince
  */
 public class Main extends Application {
 	

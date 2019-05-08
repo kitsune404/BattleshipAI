@@ -105,6 +105,17 @@ public class Game {
 		return coords;
 	}
 	
+	/**
+	 * Converts Coordinates From int To String For Printing Purposes
+	 * @param x
+	 * @param y
+	 * @return Coordinates in String Format
+	 */
+	public String convertCoord(int x, int y) {
+		char first = (char)(x + 65);
+		return first + " " + (y + 1);
+	}
+	
 	
 	/**
 	 * Checks for win
