@@ -9,7 +9,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
-
+/**
+ * The main class of the GUI
+ * @author meganlahm
+ *
+ */
 public class Main extends Application {
 	
 	
@@ -61,13 +65,17 @@ public class Main extends Application {
 		}
 	}
 	
+	/**
+	 * Creates the top GP of the GUI
+	 * @return
+	 */
 	public GridPane topPane() {
 		topGP = new GridPane();
 		
 		for(int i = 0; i < 10; i++) {
-			topGP.add(new Label(" "+(char)(i+65)+ " "), i+1,0);
+			topGP.add(new Label("  "+(char)(i+65)+ " "), i+1,0);
+			topGP.add(new Label(" "+(i+1)+ " "), 0,i+1);
 			for(int j = 0; j < 10; j++) {
-				topGP.add(new Label(" "+(j+1)+ " "), 0,j+1);
 				opponentBoardArr[i][j] = new Circle(16);
 				opponentBoardArr[i][j].setFill(Color.BURLYWOOD);
 				//TODO: make event handler for buttons
@@ -79,13 +87,17 @@ public class Main extends Application {
 	}
 	
 	
+	/**
+	 * Creates the bottom pane of the GUI
+	 * @return
+	 */
 	public GridPane bottomPane() {
 		bottomGP = new GridPane();
 		
 		for(int i = 0; i < 10; i++) {
-			bottomGP.add(new Label(" "+(char)(i+65)+ " "), i+1,0);
+			bottomGP.add(new Label("  "+(char)(i+65)+ " "), i+1,0);
+			bottomGP.add(new Label(" "+(i+1)+ " "), 0,i+1);
 			for(int j = 0; j < 10; j++) {
-				bottomGP.add(new Label(" "+(j+1)+ " "), 0,j+1);
 				myBoardArr[i][j] = new Circle(16);
 				myBoardArr[i][j].setFill(Color.DARKGREY);
 				//TODO: make event handler for buttons
@@ -96,6 +108,10 @@ public class Main extends Application {
 		return bottomGP;
 	}
 	
+	/**
+	 * Handles when buttons are clicked
+	 * @param event
+	 */
 	public void handle(ActionEvent event)  {
 		//TODO: handle stuff
 	}
