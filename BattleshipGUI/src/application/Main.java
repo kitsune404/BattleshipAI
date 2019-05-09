@@ -2,10 +2,12 @@ package application;
 	
 import javafx.application.Application;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -15,7 +17,7 @@ import javafx.scene.shape.Circle;
  * @author meganlahm
  * @author Dylan Prince
  */
-public class Main extends Application {
+public class Main extends Application implements EventHandler<ActionEvent> {
 	
 	
 	/** The top grid pane of the GUI */
@@ -25,10 +27,10 @@ public class Main extends Application {
 	private GridPane bottomGP;
 	
 	/** Array of the opponent guess board */
-	private Circle [][] opponentBoardArr;
+	private Button [][] opponentBoardArr;
 	
 	/** Array of player's board */
-	private Circle [][] myBoardArr;
+	private Button [][] myBoardArr;
 	
 	/** Button to reset the game */
 	private Button resetB;
@@ -48,8 +50,11 @@ public class Main extends Application {
 			Scene scene = new Scene(root, 760, 740);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			
-			opponentBoardArr = new Circle[10][10];
-			myBoardArr = new Circle[10][10];
+			opponentBoardArr = new Button[10][10];
+			myBoardArr = new Button[10][10];
+			resetB = new Button();
+			resetB.setText("New Game");
+			resetB.setOnAction(this);
 			GridPane title1GP = new GridPane();
 			title1GP.add(new Label("Opponent's Board:"), 0, 0);
 			GridPane title2GP = new GridPane();
@@ -59,6 +64,7 @@ public class Main extends Application {
 			root.add(topPane(), 0, 1);
 			root.add(title2GP, 0, 2);
 			root.add(bottomPane(), 0, 3);
+			root.add(resetB, 1,4);
 			
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("Battleship");
@@ -80,9 +86,11 @@ public class Main extends Application {
 			topGP.add(new Label("  "+(char)(i+65)+ " "), i+1,0);
 			topGP.add(new Label(" "+(i+1)+ " "), 0,i+1);
 			for(int j = 0; j < 10; j++) {
-				opponentBoardArr[i][j] = new Circle(16);
-				opponentBoardArr[i][j].setFill(Color.BURLYWOOD);
-				//TODO: make event handler for buttons
+				opponentBoardArr[i][j] = new Button();
+				opponentBoardArr[i][j].setOnAction(this);
+				opponentBoardArr[i][j].setShape(new Circle(15));
+				opponentBoardArr[i][j].setStyle("-fx-background-color: #ced2db");
+				
 				topGP.add(opponentBoardArr[i][j], j+1, i+1);
 			}
 		}
@@ -91,21 +99,26 @@ public class Main extends Application {
 	}
 	
 	
+	
 	/**
 	 * Creates the bottom pane of the GUI
 	 * @return
 	 */
 	public GridPane bottomPane() {
 		bottomGP = new GridPane();
+		bottomGP.setScaleShape(false);
 		
 		for(int i = 0; i < 10; i++) {
 			bottomGP.add(new Label("  "+(char)(i+65)+ " "), i+1,0);
 			bottomGP.add(new Label(" "+(i+1)+ " "), 0,i+1);
 			for(int j = 0; j < 10; j++) {
-				myBoardArr[i][j] = new Circle(16);
-				myBoardArr[i][j].setFill(Color.DARKGREY);
-				//TODO: make event handler for buttons
+				myBoardArr[i][j] = new Button();
+				myBoardArr[i][j].setShape(new Circle(15));
+				myBoardArr[i][j].setStyle("-fx-background-color: #e0d8c0");
+				myBoardArr[i][j].setOnAction(this);
+
 				bottomGP.add(myBoardArr[i][j], j+1, i+1);
+				
 			}
 		}
 		
@@ -122,8 +135,8 @@ public class Main extends Application {
 			letsPlay = new Game(true);
 			for(int i = 0; i < 10; i++) {
 				for(int j = 0; j < 10; j++) {
-					myBoardArr[i][j].setFill(Color.DARKGREY);
-					opponentBoardArr[i][j].setFill(Color.BURLYWOOD);
+					myBoardArr[i][j].setStyle("-fx-background-color: #e0d8c0");
+					opponentBoardArr[i][j].setStyle("-fx-background-color: #ced2db");
 				}
 			}
 		}
@@ -131,10 +144,12 @@ public class Main extends Application {
 			for(int i = 0; i < 10; i++) {
 				for(int j = 0; j < 10; j++) {
 					if(event.getSource()==myBoardArr[i][j]) {
-						//TODO: try to place a ship
+						//TODO: If my board is clicked
+						myBoardArr[i][j].setStyle("-fx-background-color: #496352");
 					}
 					if(event.getSource()==opponentBoardArr[i][j]) {
-						//TODO: try to make a move
+						//TODO: If opponent board is clicked
+						opponentBoardArr[i][j].setStyle("-fx-background-color: #f44262");
 					}
 				}
 			}

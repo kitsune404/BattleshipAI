@@ -8571,3 +8571,16 @@ java.io.IOException: Unable to resolve plug-in "org.eclipse.epp.mpc.ui".
 
 !ENTRY org.eclipse.e4.ui.workbench 2 0 2019-05-08 19:14:33.585
 !MESSAGE Removing part descriptor with the 'org.eclipse.tips.ide.tipPart' id and the 'Tip of the Day' description. Points to the invalid 'bundleclass://org.eclipse.tips.ide/org.eclipse.tips.ide.internal.TipPart' class.
+!SESSION 2017-12-31 18:00:49.228 -----------------------------------------------
+eclipse.buildId=4.11.0.I20190307-0500
+java.version=1.8.0_102
+java.vendor=Oracle Corporation
+BootLoader constants: OS=macosx, ARCH=x86_64, WS=cocoa, NL=en_US
+Framework arguments:  -product org.eclipse.epp.package.java.product -keyring /Users/meganlahm/.eclipse_keyring
+Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -product org.eclipse.epp.package.java.product -keyring /Users/meganlahm/.eclipse_keyring
+
+!ENTRY org.eclipse.core.resources 2 10035 2019-05-08 21:17:52.165
+!MESSAGE The workspace exited with unsaved changes in the previous session; refreshing workspace to recover changes.
+
+!ENTRY org.eclipse.egit.core 1 0 2019-05-08 21:17:57.694
+!MESSAGE Using Apache MINA sshd as ssh client.
