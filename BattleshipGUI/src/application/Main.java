@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -28,6 +29,9 @@ public class Main extends Application {
 	
 	/** Array of player's board */
 	private Circle [][] myBoardArr;
+	
+	/** Button to reset the game */
+	private Button resetB;
 	
 	/** Game object */
 	private Game letsPlay;
@@ -113,7 +117,28 @@ public class Main extends Application {
 	 * @param event
 	 */
 	public void handle(ActionEvent event)  {
-		//TODO: handle stuff
+		if(event.getSource()==resetB) {
+			//TODO: make new game clear moves, reset colors, etc.
+			letsPlay = new Game(true);
+			for(int i = 0; i < 10; i++) {
+				for(int j = 0; j < 10; j++) {
+					myBoardArr[i][j].setFill(Color.DARKGREY);
+					opponentBoardArr[i][j].setFill(Color.BURLYWOOD);
+				}
+			}
+		}
+		else {
+			for(int i = 0; i < 10; i++) {
+				for(int j = 0; j < 10; j++) {
+					if(event.getSource()==myBoardArr[i][j]) {
+						//TODO: try to place a ship
+					}
+					if(event.getSource()==opponentBoardArr[i][j]) {
+						//TODO: try to make a move
+					}
+				}
+			}
+		}
 	}
 	
 	public static void main(String[] args) {
