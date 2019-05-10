@@ -26,6 +26,14 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 	/** The bottom grid pane of the GUI */
 	private GridPane bottomGP;
 	
+	private GridPane messageGP;
+	
+	private GridPane shipPlaceGP;
+	
+	private Boolean [] activeShip;
+	
+	private Boolean orientation;
+	
 	/** Array of the opponent guess board */
 	private Button [][] opponentBoardArr;
 	
@@ -35,6 +43,18 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 	/** Button to reset the game */
 	private Button resetB;
 	
+	private Button orientationB;
+	
+	private Button carrierB; //five
+	
+	private Button battleshipB; //four
+	
+	private Button cruiserB; //three
+	
+	private Button subB; //three
+	
+	private Button destroyerB; //two
+	
 	/** Game object */
 	private Game letsPlay;
 	
@@ -43,6 +63,9 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 		try {
 			
 			letsPlay = new Game(true);
+			
+			activeShip = new Boolean [5];
+			orientation = false;
 			
 			GridPane root = new GridPane();
 			root.setStyle("-fx-background-color: #557ea0;");
@@ -60,10 +83,15 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 			GridPane title2GP = new GridPane();
 			title2GP.add(new Label("Your Board:"), 0, 0);
 			
+			
+			messageGP = new GridPane();
+			
 			root.add(title1GP, 0, 0);
 			root.add(topPane(), 0, 1);
+			root.add(messageGP, 1, 1);
 			root.add(title2GP, 0, 2);
 			root.add(bottomPane(), 0, 3);
+			root.add(shipsPane(), 1, 3);
 			root.add(resetB, 1,4);
 			
 			primaryStage.setScene(scene);
@@ -98,6 +126,32 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 		return topGP;
 	}
 	
+	
+	public GridPane shipsPane() {
+		shipPlaceGP = new GridPane();
+		orientationB = new Button("Horizontal (click to switch orientation)");
+		orientationB.setOnAction(this);
+		carrierB = new Button("Place Carrier (5 spaces)");
+		carrierB.setOnAction(this);
+		battleshipB = new Button("Place Battleship (4 spaces)");
+		battleshipB.setOnAction(this);
+		cruiserB = new Button("Place Cruiser (3 spaces)");
+		cruiserB.setOnAction(this);
+		subB = new Button("Place Submarine (3 spaces)");
+		subB.setOnAction(this);
+		destroyerB = new Button("Place Destroyer (2 spaces)");
+		destroyerB.setOnAction(this);
+		
+		shipPlaceGP.add(new Label("Ships to place:"), 0, 1);
+		shipPlaceGP.add(carrierB, 1, 1);
+		shipPlaceGP.add(battleshipB, 1, 2);
+		shipPlaceGP.add(cruiserB, 1, 3);
+		shipPlaceGP.add(subB, 1, 4);
+		shipPlaceGP.add(destroyerB, 1, 5);
+		shipPlaceGP.add(orientationB, 1, 6);
+		
+		return shipPlaceGP;
+	}
 	
 	
 	/**
@@ -138,6 +192,56 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 					myBoardArr[i][j].setStyle("-fx-background-color: #e0d8c0");
 					opponentBoardArr[i][j].setStyle("-fx-background-color: #ced2db");
 				}
+			}
+		}
+		else if (event.getSource()==orientationB) {
+			if(orientationB.getStyle()=="Horizontal (click to switch orientation)") {
+				orientation = false;
+				orientationB.setStyle("Vertical (click to switch orientation)");
+			}
+			else  {
+				orientation = true;
+				orientationB.setStyle("Horizontal (click to switch orientation)");
+			}	
+		}
+		else if(event.getSource()==carrierB) {
+			for(int i = 0; i < 5; i ++) {
+				if(i!=0)
+					activeShip[i] = false;
+				else
+					activeShip[i] = true;
+			}
+		}
+		else if(event.getSource()==battleshipB) {
+			for(int i = 0; i < 5; i ++) {
+				if(i!=1)
+					activeShip[i] = false;
+				else
+					activeShip[i] = true;
+			}
+		}
+		else if(event.getSource()==cruiserB) {
+			for(int i = 0; i < 5; i ++) {
+				if(i!=2)
+					activeShip[i] = false;
+				else
+					activeShip[i] = true;
+			}
+		}
+		else if(event.getSource()==subB) {
+			for(int i = 0; i < 5; i ++) {
+				if(i!=3)
+					activeShip[i] = false;
+				else
+					activeShip[i] = true;
+			}
+		}
+		else if(event.getSource()==destroyerB) {
+			for(int i = 0; i < 5; i ++) {
+				if(i!=4)
+					activeShip[i] = false;
+				else
+					activeShip[i] = true;
 			}
 		}
 		else {
