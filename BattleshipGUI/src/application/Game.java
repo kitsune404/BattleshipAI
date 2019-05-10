@@ -11,6 +11,9 @@ public class Game {
 	/** Stores the players of the game */
 	public ArrayList<Player> players;
 	
+	/** AI Player */
+	private AI ai;
+	
 	/** The winner var */
 	public String winner;
 	
@@ -23,8 +26,8 @@ public class Game {
 			players.add(new Player());
 		}
 		else {
-			//TODO: Setup AI player
-			players.add(new AI());
+			ai = new AI();
+			players.add(ai);
 		}
 	}
 	
@@ -57,6 +60,18 @@ public class Game {
 	}
 	
 	
+	
+	public String receiveAIAttack() {
+		int[] coords = ai.determineMove();
+		String s = tryAttack(coords[0],coords[1],1);
+		if(s.equals("miss")) {
+			return "AI Strikes " + convertCoord(coords[0],coords[1]) + " And Misses";
+		}else if(s.equals("hit")){
+			return "AI Strikes " + convertCoord(coords[0],coords[1]) + " And Hits";
+		}
+		return "AI Strikes " + convertCoord(coords[0],coords[1]) + " And " + s;
+	}
+	
 	/**
 	 * Check if attack is a valid move
 	 * @param posX
@@ -78,6 +93,15 @@ public class Game {
 		return output;
 	}
 	
+	
+	
+	/**
+	 * Try Attack With Array Indexes
+	 * @param posX
+	 * @param posY
+	 * @param player
+	 * @return
+	 */
 	public String tryAttack(int posX, int posY, int player){
 		String output = "Invalid Move, Try Again";
 		if(players.get(player).isValidAttack(posX, posY)){
@@ -113,7 +137,7 @@ public class Game {
 	 */
 	public String convertCoord(int x, int y) {
 		char first = (char)(x + 65);
-		return first + " " + (y + 1);
+		return "[" + first + "," + (y + 1) + "]";
 	}
 	
 	
@@ -134,11 +158,11 @@ public class Game {
 		}
 		
 		if(oneCount == 5) {
-			winner = "Player One";
+			winner = "Player Two Wins!";
 			return true;
 		}
 		if(twoCount == 5) {
-			winner = "Player Two";
+			winner = "Player One Wins!";
 			return true;
 		}
 		return false;
