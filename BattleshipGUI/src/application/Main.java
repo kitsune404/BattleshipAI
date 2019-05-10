@@ -68,8 +68,10 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 	/** Game object */
 	private Game letsPlay;
 	
+	/** The width of the GUI */
 	private final int SCENEWIDTH = 850;
 	
+	/** The height of the GUI */
 	private final int SCENEHEIGHT = 800;
 	
 	@Override
@@ -101,8 +103,6 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 			root.add(textPane(), 1, 1);
 			root.add(new Label("Menu"), 1, 2);
 			root.add(menuPane(), 1, 3);
-
-			root.add(resetB, 1,4);
 
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("Battleship");
@@ -167,19 +167,31 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 		return bottomGP;
 	}
 
+	/**
+	 * Reset the text in the message pane
+	 */
 	private void resetText() {
 		feedback = "Welcome To Battleship!\n"
 				+ "Select Your Ships And Place Them On The Lower Board In A Horizontal Or Vertical Position\n"
 				+ "The Selected Space Will Serve As The Leftmost And Topmost Position, Respectively";
 	}
 	
+	/**
+	 * Set the text of the feedback pane
+	 * @param s
+	 */
 	private void setText(String s) {
-		feedback += s + "\n";
+		feedback += s + "\n\n";
 		feedPane.setText(feedback);
 	}
 	
+	/**
+	 * Create the Scroll pane that shows moves
+	 * @return the created pane
+	 */
 	private ScrollPane textPane() {
 		feedPane = new Text();
+		feedPane.setWrappingWidth((double)SCENEWIDTH/2);
 		resetText();
 		setText("");
 		ScrollPane scroll = new ScrollPane();
@@ -187,13 +199,17 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 		return scroll;
 	}
 	
+	/**
+	 * Create the menu pane
+	 * @return the created menu pane
+	 */
 	private GridPane menuPane() {		
 		mPane = new GridPane();
 		
 		resetB = new Button();
 		resetB.setText("New Game");
 		resetB.setOnAction(this);
-		mPane.add(resetB, 0, 0);
+		mPane.add(resetB, 0, 7);
 		dirB = new Button();
 		dirB.setText("Change Current Direction:");
 		dirB.setOnAction(this);

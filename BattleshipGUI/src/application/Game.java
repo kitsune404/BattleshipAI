@@ -60,7 +60,10 @@ public class Game {
 	}
 	
 	
-	
+	/**
+	 * Determines the text of the move to be sent to the controller
+	 * @return
+	 */
 	public String receiveAIAttack() {
 		int[] coords = ai.determineMove();
 		String s = tryAttack(coords[0],coords[1],1);
