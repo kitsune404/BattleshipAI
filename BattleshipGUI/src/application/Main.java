@@ -3,14 +3,15 @@ package application;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 
 /**
  * The main class of the GUI
@@ -26,6 +27,22 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 	/** The bottom grid pane of the GUI */
 	private GridPane bottomGP;
 	
+<<<<<<< HEAD
+	/** GridPane For The Menu Buttons */
+	private GridPane mPane;
+	
+	/** Displays If Current Direction Is Horizontal */
+	private Label hLabel;
+=======
+	private GridPane messageGP;
+	
+	private GridPane shipPlaceGP;
+	
+	private Boolean [] activeShip;
+	
+	private Boolean orientation;
+>>>>>>> a1f9d7018900cc5ed69a0d9b773f9f9cda7f1014
+	
 	/** Array of the opponent guess board */
 	private Button [][] opponentBoardArr;
 	
@@ -35,37 +52,92 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 	/** Button to reset the game */
 	private Button resetB;
 	
+<<<<<<< HEAD
+	/** Buttons Corresponding To The Ships */
+	private Button[] shipB;
+	
+	/** Button Corresponding To Current Ship Direction */
+	private Button dirB;
+	
+	/** Boolean If Ship Placement Is Horizontal*/
+	private boolean isHorizontal;
+	
+	/** Boolean Stating If Ship Placement Is Currently Active */
+	private boolean isPlacing;
+	
+	/** Content Of Feedback Pane */
+	private String feedback;
+	
+	/** Displays Feedback From Game */
+	private Text feedPane;
+	
+	/** Current Selected Ship */
+	private int currentShip;
+=======
+	private Button orientationB;
+	
+	private Button carrierB; //five
+	
+	private Button battleshipB; //four
+	
+	private Button cruiserB; //three
+	
+	private Button subB; //three
+	
+	private Button destroyerB; //two
+>>>>>>> a1f9d7018900cc5ed69a0d9b773f9f9cda7f1014
+	
 	/** Game object */
 	private Game letsPlay;
+	
+	private final int SCENEWIDTH = 760;
+	
+	private final int SCENEHEIGHT = 800;
 	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
 			
+<<<<<<< HEAD
+			startGame();
+=======
 			letsPlay = new Game(true);
 			
+			activeShip = new Boolean [5];
+			orientation = false;
+			
+>>>>>>> a1f9d7018900cc5ed69a0d9b773f9f9cda7f1014
 			GridPane root = new GridPane();
 			root.setStyle("-fx-background-color: #557ea0;");
 			
-			Scene scene = new Scene(root, 760, 740);
+			Scene scene = new Scene(root, SCENEWIDTH, SCENEHEIGHT);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			
 			opponentBoardArr = new Button[10][10];
 			myBoardArr = new Button[10][10];
-			resetB = new Button();
-			resetB.setText("New Game");
-			resetB.setOnAction(this);
 			GridPane title1GP = new GridPane();
 			title1GP.add(new Label("Opponent's Board:"), 0, 0);
 			GridPane title2GP = new GridPane();
 			title2GP.add(new Label("Your Board:"), 0, 0);
 			
+			
+			messageGP = new GridPane();
+			
 			root.add(title1GP, 0, 0);
 			root.add(topPane(), 0, 1);
+			root.add(messageGP, 1, 1);
 			root.add(title2GP, 0, 2);
 			root.add(bottomPane(), 0, 3);
+<<<<<<< HEAD
+			root.add(new Label("Game Feedback"), 1, 0);
+			root.add(textPane(), 1, 1);
+			root.add(new Label("Menu"), 1, 2);
+			root.add(menuPane(), 1, 3);
+=======
+			root.add(shipsPane(), 1, 3);
 			root.add(resetB, 1,4);
 			
+>>>>>>> a1f9d7018900cc5ed69a0d9b773f9f9cda7f1014
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("Battleship");
 			primaryStage.show();
@@ -79,19 +151,22 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 	 * Creates the top GP of the GUI
 	 * @return
 	 */
-	public GridPane topPane() {
+	private GridPane topPane() {
 		topGP = new GridPane();
-		
+		topGP.setMinSize((SCENEWIDTH/2), (SCENEHEIGHT/2)-20);
 		for(int i = 0; i < 10; i++) {
 			topGP.add(new Label("  "+(char)(i+65)+ " "), i+1,0);
 			topGP.add(new Label(" "+(i+1)+ " "), 0,i+1);
 			for(int j = 0; j < 10; j++) {
 				opponentBoardArr[i][j] = new Button();
 				opponentBoardArr[i][j].setOnAction(this);
-				opponentBoardArr[i][j].setShape(new Circle(15));
+				opponentBoardArr[i][j].setShape(new Circle(10));
 				opponentBoardArr[i][j].setStyle("-fx-background-color: #ced2db");
-				
-				topGP.add(opponentBoardArr[i][j], j+1, i+1);
+				opponentBoardArr[i][j].setAlignment(Pos.CENTER);
+				opponentBoardArr[i][j].setScaleShape(false);
+				opponentBoardArr[i][j].setDisable(true);
+				opponentBoardArr[i][j].setText(" ");
+				topGP.add(opponentBoardArr[i][j], i + 1, j + 1);
 			}
 		}
 		
@@ -99,31 +174,118 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 	}
 	
 	
+	public GridPane shipsPane() {
+		shipPlaceGP = new GridPane();
+		orientationB = new Button("Horizontal (click to switch orientation)");
+		orientationB.setOnAction(this);
+		carrierB = new Button("Place Carrier (5 spaces)");
+		carrierB.setOnAction(this);
+		battleshipB = new Button("Place Battleship (4 spaces)");
+		battleshipB.setOnAction(this);
+		cruiserB = new Button("Place Cruiser (3 spaces)");
+		cruiserB.setOnAction(this);
+		subB = new Button("Place Submarine (3 spaces)");
+		subB.setOnAction(this);
+		destroyerB = new Button("Place Destroyer (2 spaces)");
+		destroyerB.setOnAction(this);
+		
+		shipPlaceGP.add(new Label("Ships to place:"), 0, 1);
+		shipPlaceGP.add(carrierB, 1, 1);
+		shipPlaceGP.add(battleshipB, 1, 2);
+		shipPlaceGP.add(cruiserB, 1, 3);
+		shipPlaceGP.add(subB, 1, 4);
+		shipPlaceGP.add(destroyerB, 1, 5);
+		shipPlaceGP.add(orientationB, 1, 6);
+		
+		return shipPlaceGP;
+	}
+	
 	
 	/**
 	 * Creates the bottom pane of the GUI
 	 * @return
 	 */
-	public GridPane bottomPane() {
+	private GridPane bottomPane() {
 		bottomGP = new GridPane();
 		bottomGP.setScaleShape(false);
-		
+		bottomGP.setMinSize((SCENEWIDTH/2), (SCENEHEIGHT/2)-20);
 		for(int i = 0; i < 10; i++) {
 			bottomGP.add(new Label("  "+(char)(i+65)+ " "), i+1,0);
 			bottomGP.add(new Label(" "+(i+1)+ " "), 0,i+1);
 			for(int j = 0; j < 10; j++) {
 				myBoardArr[i][j] = new Button();
-				myBoardArr[i][j].setShape(new Circle(15));
+				myBoardArr[i][j].setShape(new Circle(10));
+				myBoardArr[i][j].setScaleShape(false);
 				myBoardArr[i][j].setStyle("-fx-background-color: #e0d8c0");
 				myBoardArr[i][j].setOnAction(this);
-
-				bottomGP.add(myBoardArr[i][j], j+1, i+1);
+				myBoardArr[i][j].setAlignment(Pos.CENTER);
+				myBoardArr[i][j].setText(" ");
+				bottomGP.add(myBoardArr[i][j], i + 1, j + 1);
 				
 			}
 		}
 		
 		return bottomGP;
 	}
+
+	private void resetText() {
+		feedback = "Welcome To Battleship!\n"
+				+ "Select Your Ships And Place Them On The Lower Board In A Horizontal Or Vertical Position\n"
+				+ "The Selected Space Will Serve As The Leftmost And Topmost Position, Respectively";
+	}
+	
+	private void setText(String s) {
+		feedback += s + "\n";
+		feedPane.setText(feedback);
+	}
+	
+	private ScrollPane textPane() {
+		feedPane = new Text();
+		resetText();
+		setText("");
+		ScrollPane scroll = new ScrollPane();
+		scroll.setContent(feedPane);
+		return scroll;
+	}
+	
+	private GridPane menuPane() {		
+		mPane = new GridPane();
+		
+		resetB = new Button();
+		resetB.setText("New Game");
+		resetB.setOnAction(this);
+		mPane.add(resetB, 0, 0);
+		dirB = new Button();
+		dirB.setText("Change Current Direction:");
+		dirB.setOnAction(this);
+		mPane.add(dirB, 0, 1);
+		hLabel = new Label("Horizontal");
+		mPane.add(hLabel, 1, 1);
+		shipB = new Button[Player.SHIPNAMES.length];
+		for(int i = 0; i < shipB.length; i++) {
+			shipB[i] = new Button();
+			shipB[i].setText("Place " + Player.SHIPNAMES[i]);
+			shipB[i].setOnAction(this);
+			mPane.add(shipB[i], 0, (i + 2));
+			mPane.add(new Label("Size: " + Player.SHIPSIZES[i]), 1, (i + 2));
+		}
+		return mPane;
+	}
+	
+	/**
+	 * Inverts The isHorizontal Boolean And Adjusts
+	 * The Label To Reflect This Change
+	 */
+	private void changeDirection() {
+		
+		isHorizontal = !isHorizontal;
+		if(isHorizontal) {
+			hLabel.setText("Horizontal");
+		}else {
+			hLabel.setText("Vertical");
+		}
+	}
+	
 	
 	/**
 	 * Handles when buttons are clicked
@@ -132,26 +294,214 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 	public void handle(ActionEvent event)  {
 		if(event.getSource()==resetB) {
 			//TODO: make new game clear moves, reset colors, etc.
-			letsPlay = new Game(true);
+			startGame();
 			for(int i = 0; i < 10; i++) {
 				for(int j = 0; j < 10; j++) {
 					myBoardArr[i][j].setStyle("-fx-background-color: #e0d8c0");
+					myBoardArr[i][j].setDisable(false);
 					opponentBoardArr[i][j].setStyle("-fx-background-color: #ced2db");
+					opponentBoardArr[i][j].setDisable(true);
 				}
+			}
+			for(int i = 0; i < shipB.length; i++) {
+				shipB[i].setDisable(false);
+			}
+		}else if(event.getSource()==dirB) {
+			
+			changeDirection();
+		}
+		else if (event.getSource()==orientationB) {
+			if(orientationB.getStyle()=="Horizontal (click to switch orientation)") {
+				orientation = false;
+				orientationB.setStyle("Vertical (click to switch orientation)");
+			}
+			else  {
+				orientation = true;
+				orientationB.setStyle("Horizontal (click to switch orientation)");
+			}	
+		}
+		else if(event.getSource()==carrierB) {
+			for(int i = 0; i < 5; i ++) {
+				if(i!=0)
+					activeShip[i] = false;
+				else
+					activeShip[i] = true;
+			}
+		}
+		else if(event.getSource()==battleshipB) {
+			for(int i = 0; i < 5; i ++) {
+				if(i!=1)
+					activeShip[i] = false;
+				else
+					activeShip[i] = true;
+			}
+		}
+		else if(event.getSource()==cruiserB) {
+			for(int i = 0; i < 5; i ++) {
+				if(i!=2)
+					activeShip[i] = false;
+				else
+					activeShip[i] = true;
+			}
+		}
+		else if(event.getSource()==subB) {
+			for(int i = 0; i < 5; i ++) {
+				if(i!=3)
+					activeShip[i] = false;
+				else
+					activeShip[i] = true;
+			}
+		}
+		else if(event.getSource()==destroyerB) {
+			for(int i = 0; i < 5; i ++) {
+				if(i!=4)
+					activeShip[i] = false;
+				else
+					activeShip[i] = true;
 			}
 		}
 		else {
-			for(int i = 0; i < 10; i++) {
-				for(int j = 0; j < 10; j++) {
-					if(event.getSource()==myBoardArr[i][j]) {
-						//TODO: If my board is clicked
-						myBoardArr[i][j].setStyle("-fx-background-color: #496352");
-					}
-					if(event.getSource()==opponentBoardArr[i][j]) {
-						//TODO: If opponent board is clicked
-						opponentBoardArr[i][j].setStyle("-fx-background-color: #f44262");
+			if(isPlacing) {
+				for(int i = 0; i < shipB.length; i++) {
+					if(event.getSource()== shipB[i]) {
+						currentShip = i;
+						return;
 					}
 				}
+				for(int i = 0; i < 10; i++) {
+					for(int j = 0; j < 10; j++) {
+						if(event.getSource()==myBoardArr[i][j]) {
+							//TODO: If my board is clicked
+							//myBoardArr[i][j].setStyle("-fx-background-color: #496352");
+							if(currentShip > -1) {
+								boolean isBoardChanged = false;
+								char dirChar = 'V';
+								if(isHorizontal) {
+									dirChar = 'H';
+								}
+								if(letsPlay.placeShip(currentShip, dirChar, i, j, 0)) {
+									setText(Player.SHIPNAMES[currentShip] + " Placed");
+									isBoardChanged = true;
+									shipB[currentShip].setDisable(true);
+									currentShip = -1;
+								}else {
+									setText("Invalid Placement For Ship");
+								}
+								if(isBoardChanged) {
+									updateBottomBoard();
+									int placedShips = 0;
+									for(int k = 0; k < shipB.length; k++) {
+										if(shipB[k].isDisable()) {
+											placedShips++;
+										}
+									}
+									if(placedShips == 5) {
+										switchToAttack();
+									}
+								}
+								
+							}
+							break;
+						}
+					}
+				}
+			}else {
+				for(int i = 0; i < 10; i++) {
+					for(int j = 0; j < 10; j++) {
+						if(event.getSource()==opponentBoardArr[i][j]) {
+							//TODO: If opponent board is clicked
+							String s = letsPlay.tryAttack(i, j, 0);
+							setText(s);
+							if(!s.equals("Invalid Move, Try Again")) {
+								updateTopBoard();
+								if(letsPlay.isWin()) {
+									setText(letsPlay.winner);
+									lockTopButtons();
+									return;
+								}
+								setText(letsPlay.receiveAIAttack());
+								updateBottomBoard();
+								if(letsPlay.isWin()) {
+									setText(letsPlay.winner);
+									lockTopButtons();
+									return;
+								}
+							}
+							return;
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Resets Game
+	 */
+	private void startGame() {
+		letsPlay = new Game(true);
+		isPlacing = true;
+		isHorizontal = true;
+		currentShip = -1;
+		resetText();
+	}
+	
+	/**
+	 * Updates Button Colors For Bottom Board
+	 */
+	private void updateBottomBoard() {
+		for(int i = 0; i < 10; i++) {
+			for(int j = 0; j < 10; j++) {
+				if(letsPlay.players.get(0).myBoard[i][j] != '~') {
+					if(letsPlay.players.get(0).myBoard[i][j] == 'x') {
+						myBoardArr[i][j].setStyle("-fx-background-color: #a31111");
+					}else {
+						myBoardArr[i][j].setStyle("-fx-background-color: #76e2cb");
+						//myBoardArr[i][j].setText(Character.toString(letsPlay.players.get(0).myBoard[i][j]));
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Updates Top Board to Reflect Model
+	 */
+	private void updateTopBoard() {
+		for(int i = 0; i < 10; i++) {
+			for(int j = 0; j < 10; j++) {
+				if(letsPlay.players.get(0).opponentBoard[i][j] != '~') {
+					if(letsPlay.players.get(0).opponentBoard[i][j] == 'x') {
+						opponentBoardArr[i][j].setStyle("-fx-background-color: #a31111");
+					}else {
+						opponentBoardArr[i][j].setStyle("-fx-background-color: #ffffff");
+					}
+				}
+			}
+		}
+	}
+	
+	
+	/**
+	 * Locks The Attack Buttons
+	 */
+	private void lockTopButtons() {
+		for(int i = 0; i < 10; i++) {
+			for(int j = 0; j < 10; j++) {
+				opponentBoardArr[i][j].setDisable(true);
+			}
+		}
+	}
+	
+	
+	/** Makes Necessary Changes When Transitioning From
+	 * Setup To Attack */
+	private void switchToAttack() {
+		isPlacing = false;
+		for(int i = 0; i < 10; i++) {
+			for(int j = 0; j < 10; j++) {
+				myBoardArr[i][j].setDisable(true);
+				opponentBoardArr[i][j].setDisable(false);
 			}
 		}
 	}
