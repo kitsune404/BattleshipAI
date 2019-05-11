@@ -26,9 +26,17 @@ public class Game {
 			players.add(new Player());
 		}
 		else {
-			ai = new AI();
+			ai = new AI(1);
 			players.add(ai);
 		}
+	}
+	
+	/** Constructor */
+	public Game (int AIType) {
+		players = new ArrayList<Player>();
+		players.add(new Player());
+		ai = new AI(AIType);
+		players.add(ai);
 	}
 	
 	/**
@@ -66,14 +74,31 @@ public class Game {
 	 */
 	public String receiveAIAttack() {
 		int[] coords = ai.determineMove();
-		String s = tryAttack(coords[0],coords[1],1);
-		if(s.equals("miss")) {
-			return "AI Strikes " + convertCoord(coords[0],coords[1]) + " And Misses";
-		}else if(s.equals("hit")){
-			return "AI Strikes " + convertCoord(coords[0],coords[1]) + " And Hits";
+		int attackType = tryAttack(coords[0],coords[1],1);
+		switch(attackType) {
+			case -1: System.out.println(coords[0] + "," + coords[1]); return "!?";
+			case 0: return "AI Strikes " + convertCoord(coords[0],coords[1]) + " And Misses";
+			case 1: return "AI Strikes " + convertCoord(coords[0],coords[1]) + " And Hits";
+			default: return "AI Strikes " + convertCoord(coords[0],coords[1]) + " And " + Player.SHIPNAMES[attackType - 2] + " Sunk";
 		}
-		return "AI Strikes " + convertCoord(coords[0],coords[1]) + " And " + s;
 	}
+	
+	/**
+	 * Determines The Text Of The Move To Be Sent to The Controller
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public String receivePlayerAttack(int x, int y) {
+		int attackType = tryAttack(x,y,0);
+		switch(attackType) {
+			case -1: return "!?";
+			case 0: return "Miss";
+			case 1: return "Hit";
+			default: return "Opponent " + Player.SHIPNAMES[attackType - 2] + " Sunk";
+		}
+	}
+	
 	
 	/**
 	 * Check if attack is a valid move
@@ -82,18 +107,18 @@ public class Game {
 	 * @param player
 	 * @return
 	 */
-	public String tryAttack(char posX, int posY, int player){
+	public int tryAttack(char posX, int posY, int player){
 		int[] coords = convertCoord(posX,posY);
-		String output = "Invalid Move, Try Again";
+		int attackType = -1;
 		if(players.get(player).isValidAttack(coords[0], coords[1])){
-			output = players.get((player + 1) % 2).receiveMove(coords[0], coords[1]);
-			if(output.equals("miss")){
+			attackType = players.get((player + 1) % 2).receiveMove(coords[0], coords[1]);
+			if(attackType == 0){
 				players.get(player).setOpponentBoardTile(coords[0], coords[1], 'o');
 			}else{
 				players.get(player).setOpponentBoardTile(coords[0], coords[1], 'x');
 			}
 		}
-		return output;
+		return attackType;
 	}
 	
 	
@@ -105,17 +130,17 @@ public class Game {
 	 * @param player
 	 * @return
 	 */
-	public String tryAttack(int posX, int posY, int player){
-		String output = "Invalid Move, Try Again";
+	public int tryAttack(int posX, int posY, int player){
+		int attackType = -1;
 		if(players.get(player).isValidAttack(posX, posY)){
-			output = players.get((player + 1) % 2).receiveMove(posX, posY);
-			if(output.equals("miss")){
+			attackType = players.get((player + 1) % 2).receiveMove(posX, posY);
+			if(attackType == 0){
 				players.get(player).setOpponentBoardTile(posX, posY, 'o');
 			}else{
 				players.get(player).setOpponentBoardTile(posX, posY, 'x');
 			}
 		}
-		return output;
+		return attackType;
 	}
 	
 	/**

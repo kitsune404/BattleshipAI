@@ -55,14 +55,14 @@ public class Player {
 	 * @param y
 	 * @return
 	 */
-	public String receiveMove(int x, int y) {
+	public int receiveMove(int x, int y) {
 		if(isHit(x, y)) {
 			char shipHit = myBoard[x][y];
 			setBoardTile(x,y,'x');
 			for(int i = 0; i < myBoard.length; i++){
 				for(int j = 0; j < myBoard.length; j++){
 					if(myBoard[i][j] == shipHit){
-						return "hit";
+						return 1;
 					}
 				}
 			}
@@ -70,13 +70,13 @@ public class Player {
 			for(int i = 0; i < SHIPICONS.length; i++){
 				if(shipHit == SHIPICONS[i]){
 					myHitShips[i] = true;
-					return SHIPNAMES[i] + " Sunk";
+					return i + 2;
 				}
 			}
-			return "error";
+			return -1;
 		}
-			
-		return "miss";
+		setBoardTile(x,y,'o');
+		return 0;
 	}
 	
 	/**

@@ -1,5 +1,6 @@
 package application;
 	
+import java.util.Optional;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -7,6 +8,7 @@ import javafx.geometry.Pos;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
@@ -68,6 +70,9 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 	/** Game object */
 	private Game letsPlay;
 	
+	/** Type Of AI Being Implemented */
+	private int AIType;
+	
 	/** The width of the GUI */
 	private final int SCENEWIDTH = 850;
 	
@@ -79,7 +84,6 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 		try {
 
 			startGame();
-			letsPlay = new Game(true);
 			
 			GridPane root = new GridPane();
 			root.setStyle("-fx-background-color: #557ea0;");
@@ -93,7 +97,6 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 			title1GP.add(new Label("Opponent's Board:"), 0, 0);
 			GridPane title2GP = new GridPane();
 			title2GP.add(new Label("Your Board:"), 0, 0);
-			
 			
 			root.add(title1GP, 0, 0);
 			root.add(topPane(), 0, 1);
@@ -118,12 +121,15 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 	 * @return
 	 */
 	private GridPane topPane() {
+		
 		topGP = new GridPane();
 		topGP.setMinSize((SCENEWIDTH/2), (SCENEHEIGHT/2)-20);
 		for(int i = 0; i < 10; i++) {
+			
 			topGP.add(new Label("  "+(char)(i+65)+ " "), i+1,0);
 			topGP.add(new Label(" "+(i+1)+ " "), 0,i+1);
 			for(int j = 0; j < 10; j++) {
+				
 				opponentBoardArr[i][j] = new Button();
 				opponentBoardArr[i][j].setOnAction(this);
 				opponentBoardArr[i][j].setShape(new Circle(10));
@@ -145,13 +151,16 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 	 * @return
 	 */
 	private GridPane bottomPane() {
+		
 		bottomGP = new GridPane();
 		bottomGP.setScaleShape(false);
 		bottomGP.setMinSize((SCENEWIDTH/2), (SCENEHEIGHT/2)-20);
 		for(int i = 0; i < 10; i++) {
+			
 			bottomGP.add(new Label("  "+(char)(i+65)+ " "), i+1,0);
 			bottomGP.add(new Label(" "+(i+1)+ " "), 0,i+1);
 			for(int j = 0; j < 10; j++) {
+				
 				myBoardArr[i][j] = new Button();
 				myBoardArr[i][j].setShape(new Circle(10));
 				myBoardArr[i][j].setScaleShape(false);
@@ -171,6 +180,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 	 * Reset the text in the message pane
 	 */
 	private void resetText() {
+		
 		feedback = "Welcome To Battleship!\n"
 				+ "Select Your Ships And Place Them On The Lower Board In A Horizontal Or Vertical Position\n"
 				+ "The Selected Space Will Serve As The Leftmost And Topmost Position, Respectively";
@@ -181,6 +191,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 	 * @param s
 	 */
 	private void setText(String s) {
+		
 		feedback += s + "\n\n";
 		feedPane.setText(feedback);
 	}
@@ -190,6 +201,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 	 * @return the created pane
 	 */
 	private ScrollPane textPane() {
+		
 		feedPane = new Text();
 		feedPane.setWrappingWidth((double)SCENEWIDTH/2);
 		resetText();
@@ -203,9 +215,9 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 	 * Create the menu pane
 	 * @return the created menu pane
 	 */
-	private GridPane menuPane() {		
-		mPane = new GridPane();
+	private GridPane menuPane() {	
 		
+		mPane = new GridPane();
 		resetB = new Button();
 		resetB.setText("New Game");
 		resetB.setOnAction(this);
@@ -218,6 +230,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 		mPane.add(hLabel, 1, 1);
 		shipB = new Button[Player.SHIPNAMES.length];
 		for(int i = 0; i < shipB.length; i++) {
+			
 			shipB[i] = new Button();
 			shipB[i].setText("Place " + Player.SHIPNAMES[i]);
 			shipB[i].setOnAction(this);
@@ -248,25 +261,22 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 	 */
 	public void handle(ActionEvent event)  {
 		if(event.getSource()==resetB) {
+			
 			startGame();
-			for(int i = 0; i < 10; i++) {
-				for(int j = 0; j < 10; j++) {
-					myBoardArr[i][j].setStyle("-fx-background-color: #e0d8c0");
-					myBoardArr[i][j].setDisable(false);
-					opponentBoardArr[i][j].setStyle("-fx-background-color: #ced2db");
-					opponentBoardArr[i][j].setDisable(true);
-				}
-			}
+			setText("");
+			resetButtonColors();
+			setLockBottomButtons(false);
+			setLockTopButtons(true);
 			for(int i = 0; i < shipB.length; i++) {
 				shipB[i].setDisable(false);
 			}
 		}else if(event.getSource()==dirB) {
-			
 			changeDirection();
 		}
 		else {
 			if(isPlacing) {
 				for(int i = 0; i < shipB.length; i++) {
+					
 					if(event.getSource()== shipB[i]) {
 						currentShip = i;
 						return;
@@ -274,14 +284,17 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 				}
 				for(int i = 0; i < 10; i++) {
 					for(int j = 0; j < 10; j++) {
+						
 						if(event.getSource()==myBoardArr[i][j]) {
 							if(currentShip > -1) {
+								
 								boolean isBoardChanged = false;
 								char dirChar = 'V';
 								if(isHorizontal) {
 									dirChar = 'H';
 								}
 								if(letsPlay.placeShip(currentShip, dirChar, i, j, 0)) {
+									
 									setText(Player.SHIPNAMES[currentShip] + " Placed");
 									isBoardChanged = true;
 									shipB[currentShip].setDisable(true);
@@ -290,9 +303,11 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 									setText("Invalid Placement For Ship");
 								}
 								if(isBoardChanged) {
+									
 									updateBottomBoard();
 									int placedShips = 0;
 									for(int k = 0; k < shipB.length; k++) {
+										
 										if(shipB[k].isDisable()) {
 											placedShips++;
 										}
@@ -310,21 +325,21 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 			}else {
 				for(int i = 0; i < 10; i++) {
 					for(int j = 0; j < 10; j++) {
+						
 						if(event.getSource()==opponentBoardArr[i][j]) {
-							String s = letsPlay.tryAttack(i, j, 0);
+							String s = letsPlay.receivePlayerAttack(i,j);
 							setText(s);
-							if(!s.equals("Invalid Move, Try Again")) {
+							if(!s.equals("!?")) {
+								
 								updateTopBoard();
 								if(letsPlay.isWin()) {
-									setText(letsPlay.winner);
-									lockTopButtons();
+									endGame();
 									return;
 								}
 								setText(letsPlay.receiveAIAttack());
 								updateBottomBoard();
 								if(letsPlay.isWin()) {
-									setText(letsPlay.winner);
-									lockTopButtons();
+									endGame();
 									return;
 								}
 							}
@@ -340,7 +355,8 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 	 * Resets Game
 	 */
 	private void startGame() {
-		letsPlay = new Game(true);
+		popUpAISelection();
+		letsPlay = new Game(AIType);
 		isPlacing = true;
 		isHorizontal = true;
 		currentShip = -1;
@@ -348,16 +364,30 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 	}
 	
 	/**
+	 * Takes Necessary Steps To End The Game
+	 */
+	private void endGame() {
+		
+		setText(letsPlay.winner);
+		setLockTopButtons(true);
+	}
+	
+	
+	/**
 	 * Updates Button Colors For Bottom Board
 	 */
 	private void updateBottomBoard() {
+		
 		for(int i = 0; i < 10; i++) {
 			for(int j = 0; j < 10; j++) {
+				
 				if(letsPlay.players.get(0).myBoard[i][j] != '~') {
 					if(letsPlay.players.get(0).myBoard[i][j] == 'x') {
 						myBoardArr[i][j].setStyle("-fx-background-color: #a31111");
+					}else if(letsPlay.players.get(0).myBoard[i][j] == 'o'){
+						myBoardArr[i][j].setStyle("-fx-background-color: #ffffff");
 					}else {
-						myBoardArr[i][j].setStyle("-fx-background-color: #76e2cb");
+						myBoardArr[i][j].setStyle("-fx-background-color: #5ee4ff");
 					}
 				}
 			}
@@ -368,8 +398,10 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 	 * Updates Top Board to Reflect Model
 	 */
 	private void updateTopBoard() {
+		
 		for(int i = 0; i < 10; i++) {
 			for(int j = 0; j < 10; j++) {
+				
 				if(letsPlay.players.get(0).opponentBoard[i][j] != '~') {
 					if(letsPlay.players.get(0).opponentBoard[i][j] == 'x') {
 						opponentBoardArr[i][j].setStyle("-fx-background-color: #a31111");
@@ -383,12 +415,43 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 	
 	
 	/**
-	 * Locks The Attack Buttons
+	 * Locks Or Unlocks Top Pane Buttons
+	 * @param isLocked
 	 */
-	private void lockTopButtons() {
+	private void setLockTopButtons(boolean isLocked) {
+		
 		for(int i = 0; i < 10; i++) {
 			for(int j = 0; j < 10; j++) {
-				opponentBoardArr[i][j].setDisable(true);
+				
+				opponentBoardArr[i][j].setDisable(isLocked);
+			}
+		}
+	}
+	
+	/**
+	 * Locks Or Unlocks Bottom Pane Buttons
+	 * @param isLocked
+	 */
+	private void setLockBottomButtons(boolean isLocked) {
+		
+		for(int i = 0; i < 10; i++) {
+			for(int j = 0; j < 10; j++) {
+				
+				myBoardArr[i][j].setDisable(isLocked);
+			}
+		}
+	}
+	
+	/**
+	 * Resets The Buttons To Base Colors
+	 */
+	private void resetButtonColors() {
+		
+		for(int i = 0; i < 10; i++) {
+			for(int j = 0; j < 10; j++) {
+				
+				myBoardArr[i][j].setStyle("-fx-background-color: #e0d8c0");
+				opponentBoardArr[i][j].setStyle("-fx-background-color: #ced2db");
 			}
 		}
 	}
@@ -397,16 +460,32 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 	/** Makes Necessary Changes When Transitioning From
 	 * Setup To Attack */
 	private void switchToAttack() {
+		
 		isPlacing = false;
 		for(int i = 0; i < 10; i++) {
 			for(int j = 0; j < 10; j++) {
+				
 				myBoardArr[i][j].setDisable(true);
 				opponentBoardArr[i][j].setDisable(false);
 			}
 		}
+		setText("Use The Top Board To Attack The Enemy Ships!");
+	}
+	
+	private void popUpAISelection() {
+		
+		ChoiceDialog<Integer> dialog = new ChoiceDialog<Integer>(0,0,1);
+		dialog.setTitle("AI Difficulty Selection");
+		dialog.setHeaderText("Select An AI Difficulty");
+		dialog.setContentText("AI Level:");
+		Optional<Integer> result = dialog.showAndWait();
+		result.ifPresent(integer -> {
+			AIType = integer;
+		});
 	}
 	
 	public static void main(String[] args) {
+		
 		launch(args);
 	}
 	
