@@ -9,4 +9,7 @@
 <fullyQualifiedTypeName name="javafx.scene.control.ChoiceDialog"/>
 <fullyQualifiedTypeName name="java.util.Optional"/>
 <fullyQualifiedTypeName name="javafx.scene.input.MouseEvent"/>
+<fullyQualifiedTypeName name="javafx.beans.value.ChangeListener"/>
+<fullyQualifiedTypeName name="java.awt.Insets"/>
+<fullyQualifiedTypeName name="javafx.geometry.Insets"/>
 </qualifiedTypeNameHistroy>

@@ -1,5 +1,5 @@
 package application;
-	
+
 import java.util.Optional;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -30,14 +30,18 @@ public class Main extends Application{
 	/** The bottom grid pane of the GUI */
 	private GridPane bottomGP;
 	
-
 	/** GridPane For The Menu Buttons */
 	private GridPane mPane;
+	
+	/** Displays Feedback From Game */
+	private Text feedPane;
+	
+	/** Allows The feedPane To Scroll */
+	private ScrollPane scrollPane;
 	
 	/** Displays If Current Direction Is Horizontal */
 	private Label hLabel;
 
-	
 	/** Array of the opponent guess board */
 	private Button [][] opponentBoardArr;
 	
@@ -62,9 +66,6 @@ public class Main extends Application{
 	/** Content Of Feedback Pane */
 	private String feedback;
 	
-	/** Displays Feedback From Game */
-	private Text feedPane;
-	
 	/** Current Selected Ship */
 	private int currentShip;
 	
@@ -75,23 +76,26 @@ public class Main extends Application{
 	private int AIType;
 	
 	/** The width of the GUI */
-	private final int SCENEWIDTH = 850;
+	private int sceneWidth = 850;
 	
 	/** The height of the GUI */
-	private final int SCENEHEIGHT = 800;
+	private int sceneHeight = 800;
 	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-
 			startGame();
+			
+			primaryStage.heightProperty().addListener((obs, oldVal, newVal) ->
+					updateHeight(primaryStage.getHeight()));
+			primaryStage.widthProperty().addListener((obs,oldVal,newVal) ->
+					updateWidth(primaryStage.getWidth()));
 			
 			GridPane root = new GridPane();
 			root.setStyle("-fx-background-color: #557ea0;");
 			
-			Scene scene = new Scene(root, SCENEWIDTH, SCENEHEIGHT);
+			Scene scene = new Scene(root, sceneWidth, sceneHeight);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-			
 			opponentBoardArr = new Button[10][10];
 			myBoardArr = new Button[10][10];
 			GridPane title1GP = new GridPane();
@@ -126,13 +130,16 @@ public class Main extends Application{
 	 * @return
 	 */
 	private GridPane topPane() {
-		
 		topGP = new GridPane();
-		topGP.setMinSize((SCENEWIDTH/2), (SCENEHEIGHT/2)-20);
+		topGP.setPrefSize((sceneWidth/2), (sceneHeight/2)-20);
+		topGP.setGridLinesVisible(true);
+		
+		int circleSize = 10 * sceneHeight / 800;
+		Circle circle = new Circle(circleSize);
 		for(int i = 0; i < 10; i++) {
-			
 			topGP.add(new Label("  "+(char)(i+65)+ " "), i+1,0);
 			topGP.add(new Label(" "+(i+1)+ " "), 0,i+1);
+			
 			for(int j = 0; j < 10; j++) {
 				
 				opponentBoardArr[i][j] = new Button();
@@ -143,7 +150,7 @@ public class Main extends Application{
 						}
 					}
 				});
-				opponentBoardArr[i][j].setShape(new Circle(10));
+				opponentBoardArr[i][j].setShape(circle);
 				opponentBoardArr[i][j].setStyle("-fx-background-color: #ced2db");
 				opponentBoardArr[i][j].setAlignment(Pos.CENTER);
 				opponentBoardArr[i][j].setScaleShape(false);
@@ -162,21 +169,23 @@ public class Main extends Application{
 	 * @return
 	 */
 	private GridPane bottomPane() {
-		
 		bottomGP = new GridPane();
-		bottomGP.setScaleShape(false);
-		bottomGP.setMinSize((SCENEWIDTH/2), (SCENEHEIGHT/2)-20);
+		bottomGP.setPrefSize((sceneWidth/2), (sceneHeight/2)-20);
+		bottomGP.setGridLinesVisible(true);
+		
+		int circleSize = 10 * sceneHeight / 800;
+		Circle circle = new Circle(circleSize);
 		for(int i = 0; i < 10; i++) {
-			
 			bottomGP.add(new Label("  "+(char)(i+65)+ " "), i+1,0);
 			bottomGP.add(new Label(" "+(i+1)+ " "), 0,i+1);
+			
 			for(int j = 0; j < 10; j++) {
-				
 				myBoardArr[i][j] = new Button();
-				myBoardArr[i][j].setShape(new Circle(10));
+				myBoardArr[i][j].setShape(circle);
 				myBoardArr[i][j].setScaleShape(false);
 				myBoardArr[i][j].setStyle("-fx-background-color: #e0d8c0");
 				myBoardArr[i][j].setOnAction(new EventHandler<ActionEvent>() {
+					
 					public void handle(ActionEvent thisEvent) {
 						if(isPlacing && currentShip != -1){
 							bottomButtonEvent(thisEvent);
@@ -184,6 +193,7 @@ public class Main extends Application{
 					}
 				});
 				myBoardArr[i][j].setOnMouseEntered(new EventHandler<MouseEvent>() {
+					
 					public void handle(MouseEvent thisButton) {
 						if(isPlacing && currentShip != -1) {
 							setOnHover(thisButton);
@@ -191,6 +201,7 @@ public class Main extends Application{
 					}
 				});
 				myBoardArr[i][j].setOnMouseExited(new EventHandler<MouseEvent>() {
+					
 					public void handle(MouseEvent thisButton) {
 						if(isPlacing && currentShip != -1) {
 							setOnRemove(thisButton);
@@ -203,7 +214,6 @@ public class Main extends Application{
 				
 			}
 		}
-		
 		return bottomGP;
 	}
 	
@@ -212,14 +222,14 @@ public class Main extends Application{
 	 * @return the created pane
 	 */
 	private ScrollPane textPane() {
-		
+		scrollPane = new ScrollPane();
+		scrollPane.setPrefSize(sceneWidth/2, (sceneHeight/2)-20);
 		feedPane = new Text();
-		feedPane.setWrappingWidth((double)SCENEWIDTH/2);
+		feedPane.setWrappingWidth(sceneWidth/2);
 		resetText();
 		setText("");
-		ScrollPane scroll = new ScrollPane();
-		scroll.setContent(feedPane);
-		return scroll;
+		scrollPane.setContent(feedPane);
+		return scrollPane;
 	}
 	
 	/**
@@ -227,11 +237,14 @@ public class Main extends Application{
 	 * @return the created menu pane
 	 */
 	private GridPane menuPane() {	
-		
+		int buttonWidth = sceneWidth / 4;
 		mPane = new GridPane();
+		mPane.setPrefSize(sceneWidth/2, (sceneHeight/2)-20);
 		resetB = new Button();
 		resetB.setText("New Game");
+		resetB.setPrefWidth(buttonWidth);
 		resetB.setOnAction(new EventHandler<ActionEvent>() {
+			
 			public void handle(ActionEvent thisEvent) {
 				resetButtonEvent();
 			}
@@ -239,7 +252,9 @@ public class Main extends Application{
 		mPane.add(resetB, 0, 7);
 		dirB = new Button();
 		dirB.setText("Change Current Direction:");
+		dirB.setPrefWidth(buttonWidth);
 		dirB.setOnAction(new EventHandler<ActionEvent>() {
+			
 			public void handle(ActionEvent thisEvent) {
 				changeDirection();
 			}
@@ -248,11 +263,13 @@ public class Main extends Application{
 		hLabel = new Label("Horizontal");
 		mPane.add(hLabel, 1, 1);
 		shipB = new Button[Player.SHIPNAMES.length];
+		
 		for(int i = 0; i < shipB.length; i++) {
-			
 			shipB[i] = new Button();
 			shipB[i].setText("Place " + Player.SHIPNAMES[i]);
+			shipB[i].setPrefWidth(buttonWidth);
 			shipB[i].setOnAction(new EventHandler<ActionEvent>() {
+				
 				public void handle(ActionEvent thisEvent) {
 					if(isPlacing){
 						shipButtonEvent(thisEvent);
@@ -278,6 +295,7 @@ public class Main extends Application{
 		resetButtonColors();
 		setLockBottomButtons(false);
 		setLockTopButtons(true);
+		
 		for(int i = 0; i < shipB.length; i++) {
 			shipB[i].setDisable(false);
 		}
@@ -320,6 +338,7 @@ public class Main extends Application{
 	private void bottomButtonEvent(ActionEvent event) {
 		for(int i = 0; i < myBoardArr.length; i++) {
 			for(int j = 0; j < myBoardArr.length; j++) {
+				
 				if(event.getSource().equals(myBoardArr[i][j])) {
 					boolean isBoardChanged = false;
 					char dirChar = 'V';
@@ -376,6 +395,7 @@ public class Main extends Application{
 	private void setOnHover(MouseEvent event) {
 		int x = 0;
 		int y = 0;
+		
 		for(int i = 0; i < myBoardArr.length; i++) {
 			for(int j = 0; j < myBoardArr.length; j++) {
 				if(myBoardArr[i][j].equals(event.getSource())) {
@@ -385,19 +405,24 @@ public class Main extends Application{
 				}
 			}
 		}
+		
 		if(isHorizontal) {
 			for(int i = 0; i < Player.SHIPSIZES[currentShip]; i++) {
 				if(x + i > myBoardArr.length - 1) {
 					break;
 				}
-				myBoardArr[x + i][y].setStyle("-fx-background-color: #aacbff");
+				if(letsPlay.players.get(0).myBoard[x + i][y] == '~') {
+					myBoardArr[x + i][y].setStyle("-fx-background-color: #aacbff");
+				}
 			}
 		}else{
 			for(int i = 0; i < Player.SHIPSIZES[currentShip]; i++) {
 				if(y + i > myBoardArr.length - 1) {
 					break;
 				}
-				myBoardArr[x][y + i].setStyle("-fx-background-color: #aacbff");
+				if(letsPlay.players.get(0).myBoard[x][y + i] == '~') {
+					myBoardArr[x][y + i].setStyle("-fx-background-color: #aacbff");
+				}
 			}
 		}
 	}
@@ -409,6 +434,7 @@ public class Main extends Application{
 	private void setOnRemove(MouseEvent event) {
 		int x = 0;
 		int y = 0;
+		
 		for(int i = 0; i < myBoardArr.length; i++) {
 			for(int j = 0; j  < myBoardArr.length; j++) {
 				if(event.getSource().equals(myBoardArr[i][j])) {
@@ -444,11 +470,54 @@ public class Main extends Application{
 	/////////////////////////////////
 	
 	/**
+	 * Updates Element Whose Size Depends On Width
+	 * @param width
+	 */
+	private void updateWidth(double width) {
+		sceneWidth = (int)width;
+		
+		int paneWidth = sceneWidth / 2;
+		mPane.setPrefWidth(paneWidth);
+		scrollPane.setPrefWidth(paneWidth);
+		topGP.setPrefWidth(paneWidth);
+		bottomGP.setPrefWidth(paneWidth);
+		feedPane.setWrappingWidth(paneWidth);
+		
+		int mButtonWidth = sceneWidth / 4;
+		dirB.setPrefWidth(mButtonWidth);
+		resetB.setPrefWidth(mButtonWidth);
+		for(int i = 0; i < shipB.length; i++) {
+			shipB[i].setPrefWidth(mButtonWidth);
+		}
+	}
+	
+	/**
+	 * Updates Elements Whose Size Depends On Height
+	 * @param height
+	 */
+	private void updateHeight(double height) {
+		sceneHeight = (int)height;
+		
+		int paneHeight = (sceneHeight / 2) - 20;
+		mPane.setPrefHeight(paneHeight);
+		scrollPane.setPrefHeight(paneHeight);
+		topGP.setPrefHeight(paneHeight);
+		bottomGP.setPrefHeight(paneHeight);
+//		int circleWidth = 10 * sceneHeight / 800;
+//		Circle circle = new Circle(circleWidth);
+//		for(int i = 0; i < myBoardArr.length; i++) {
+//			for(int j = 0; j < myBoardArr.length; j++) {
+//				myBoardArr[i][j].setShape(circle);
+//				opponentBoardArr[i][j].setShape(circle);
+//			}
+//		}
+	}
+	
+	/**
 	 * Inverts The isHorizontal Boolean And Adjusts
 	 * The Label To Reflect This Change
 	 */
 	private void changeDirection() {
-		
 		isHorizontal = !isHorizontal;
 		if(isHorizontal) {
 			hLabel.setText("Horizontal");
@@ -461,7 +530,6 @@ public class Main extends Application{
 	 * Updates Button Colors For Bottom Board
 	 */
 	private void updateBottomBoard() {
-		
 		for(int i = 0; i < 10; i++) {
 			for(int j = 0; j < 10; j++) {
 				
@@ -482,7 +550,6 @@ public class Main extends Application{
 	 * Updates Top Board to Reflect Model
 	 */
 	private void updateTopBoard() {
-		
 		for(int i = 0; i < 10; i++) {
 			for(int j = 0; j < 10; j++) {
 				
@@ -502,10 +569,8 @@ public class Main extends Application{
 	 * @param isLocked
 	 */
 	private void setLockTopButtons(boolean isLocked) {
-		
 		for(int i = 0; i < 10; i++) {
 			for(int j = 0; j < 10; j++) {
-				
 				opponentBoardArr[i][j].setDisable(isLocked);
 			}
 		}
@@ -516,7 +581,6 @@ public class Main extends Application{
 	 * @param isLocked
 	 */
 	private void setLockBottomButtons(boolean isLocked) {
-		
 		for(int i = 0; i < 10; i++) {
 			for(int j = 0; j < 10; j++) {
 				
@@ -528,7 +592,6 @@ public class Main extends Application{
 	/** Makes Necessary Changes When Transitioning From
 	 * Setup To Attack */
 	private void switchToAttack() {
-		
 		isPlacing = false;
 		for(int i = 0; i < 10; i++) {
 			for(int j = 0; j < 10; j++) {
@@ -548,6 +611,7 @@ public class Main extends Application{
 		
 		feedback += s + "\n\n";
 		feedPane.setText(feedback);
+		scrollPane.setVvalue(1.0);
 	}
 	
 	////////////////////////////////////
@@ -569,7 +633,6 @@ public class Main extends Application{
 	 * Takes Necessary Steps To End The Game
 	 */
 	private void endGame() {
-		
 		setText(letsPlay.winner);
 		setLockTopButtons(true);
 	}
@@ -578,7 +641,6 @@ public class Main extends Application{
 	 * Reset the text in the message pane
 	 */
 	private void resetText() {
-		
 		feedback = "Welcome To Battleship!\n"
 				+ "Select Your Ships And Place Them On The Lower Board In A Horizontal Or Vertical Position\n"
 				+ "The Selected Space Will Serve As The Leftmost And Topmost Position, Respectively";
@@ -588,10 +650,8 @@ public class Main extends Application{
 	 * Resets The Buttons To Base Colors
 	 */
 	private void resetButtonColors() {
-		
 		for(int i = 0; i < 10; i++) {
 			for(int j = 0; j < 10; j++) {
-				
 				myBoardArr[i][j].setStyle("-fx-background-color: #e0d8c0");
 				opponentBoardArr[i][j].setStyle("-fx-background-color: #ced2db");
 			}
@@ -602,7 +662,6 @@ public class Main extends Application{
 	 * Creates A DialogBox That Selects An AI Level
 	 */
 	private void popUpAISelection() {
-		
 		ChoiceDialog<Integer> dialog = new ChoiceDialog<Integer>(0,0,1);
 		dialog.setTitle("AI Difficulty Selection");
 		dialog.setHeaderText("Select An AI Difficulty");
@@ -614,7 +673,6 @@ public class Main extends Application{
 	}
 	
 	public static void main(String[] args) {
-		
 		launch(args);
 	}
 	
