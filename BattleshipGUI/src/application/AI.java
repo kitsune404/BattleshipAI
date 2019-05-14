@@ -116,7 +116,7 @@ public class AI extends Player{
 				}
 			}
 		}
-		while(highValue == 0) {// If There Is No Optimum Place, Pick A Random Place
+		while(highValue == 0) {// If There Is No Optimal Place, Pick A Random Place
 			highI = r.nextInt(opponentBoard.length);
 			highJ = r.nextInt(opponentBoard.length);
 			if(opponentBoard[highI][highJ] == '~') {
