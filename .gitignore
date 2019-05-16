@@ -21,3 +21,6 @@ local.properties
 
 # Annotation Processing
 .apt_generated/
+.metadata/.mylyn/.tasks.xml.zip
+.metadata/.mylyn/.tasks.xml.zip
+*.zip
