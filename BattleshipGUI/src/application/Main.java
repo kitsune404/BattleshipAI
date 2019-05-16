@@ -1,5 +1,6 @@
 package application;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -662,7 +663,11 @@ public class Main extends Application{
 	 * Creates A DialogBox That Selects An AI Level
 	 */
 	private void popUpAISelection() {
-		ChoiceDialog<Integer> dialog = new ChoiceDialog<Integer>(0,0,1);
+		ArrayList<Integer> collect = new ArrayList<Integer>();
+		for(int i = 0; i <= AI.MAXCOMPLEX; i++) {
+			collect.add(i);
+		}
+		ChoiceDialog<Integer> dialog = new ChoiceDialog<Integer>(0,collect);
 		dialog.setTitle("AI Difficulty Selection");
 		dialog.setHeaderText("Select An AI Difficulty");
 		dialog.setContentText("AI Level:");
