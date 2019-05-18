@@ -11,7 +11,12 @@ public class AI extends Player{
 	private int complexity;
 	
 	/** Keeps Track Of Which Of The Opponent's Ships Are Sunk */
-	private boolean[] sunkOpponent;
+	private boolean[] opponentSunkShips;
+	
+	/** Keeps Track If AI KNOWS Where A Sunk Ship Was */
+	private boolean[] resolvedShip;
+	
+	private int[][] shipSunkCoords;
 	
 	/** RNG That We Will Use */
 	private Random r;
@@ -32,8 +37,13 @@ public class AI extends Player{
 				opponentBoard [i][j] = '~';
 			}
 		}
-		for(int i = 0; i < sunkOpponent.length; i++) {
-			sunkOpponent[i] = false;
+		shipSunkCoords = new int[5][];
+		for(int i = 0; i < opponentSunkShips.length; i++) {
+			opponentSunkShips[i] = false;
+			resolvedShip[i] = false;
+			shipSunkCoords[i] = new int[2];
+			shipSunkCoords[i][0] = -1;
+			shipSunkCoords[i][1] = -1;
 		}
 		placeShips();
 	}
@@ -158,11 +168,17 @@ public class AI extends Player{
 		return findMaxValue(values);
 	}
 	
-	
+	/**
+	 * Keeps Track Of Sunk Ships
+	 * And Will Search For Places Where
+	 * The Remaining Ships Can Be Placed
+	 * (Probably Best During Late-Game)
+	 * @return Attack Coordinates
+	 */
 	private int[] complexity3Move() {
-		int[][] values = initValues();
-		
-		return findMaxValue(values);
+		//TODO Make It Search For Feasible Ship Places
+		//Keep Qualities Of complexity2Move
+		return complexity2Move();
 	}
 	
 	/**
@@ -212,89 +228,109 @@ public class AI extends Player{
 	 * @param shipSunk
 	 */
 	public void sunkOpponentShip(int shipSunk, int posX, int posY) {
-		sunkOpponent[shipSunk] = true;
 		if(complexity > 2) {
-			int horCount = 0;
-			int vertCount = 0;
-			for(int i = 1; i < SHIPSIZES[shipSunk]; i++) {
-				if(posX - i > -1 && opponentBoard[posX - i][posY] == 'x') {
-					horCount++;
-				}else {
-					break;
-				}
-			}
-			
-			for(int i = 1; i < SHIPSIZES[shipSunk]; i++) {
-				if(posX + i < 10 && opponentBoard[posX + i][posY] == 'x') {
-					horCount++;
-				}else {
-					break;
-				}
-			}
-			
-			for(int i = 1; i < SHIPSIZES[shipSunk]; i++) {
-				if(posY - i > -1 && opponentBoard[posX][posY - i] == 'x') {
-					vertCount++;
-				}else {
-					break;
-				}
-			}
-			
-			for(int i = 1; i < SHIPSIZES[shipSunk]; i++) {
-				if(posY + i < 10 && opponentBoard[posX][posY + i] == 'x') {
-					vertCount++;
-				}else {
-					break;
-				}
-			}
-			
-			opponentBoard[posX][posY] = 's';
-			
-			if(vertCount < SHIPSIZES[shipSunk]) {
-				if(horCount == SHIPSIZES[shipSunk] || posX == 9 || opponentBoard[posX + 1][posY] != 'x') {
-					
-					for(int i = 1; i < SHIPSIZES[shipSunk]; i++) {
-						if(posX - i > -1 && opponentBoard[posX - i][posY] == 'x') {
-							opponentBoard[posX - i][posY] = 's';
-						}else {
-							break;
-						}
-					}
-					
-				}
-				if(horCount == SHIPSIZES[shipSunk] || posX == 0 || opponentBoard[posX - 1][posY] != 'x'){
-					
-					for(int i = 1; i < SHIPSIZES[shipSunk]; i++) {
-						if(posX + i < 10 && opponentBoard[posX + i][posY] == 'x') {
-							opponentBoard[posX + i][posY] = 's';
-						}else {
-							break;
-						}
-					}
-				}
-			}else if(horCount < SHIPSIZES[shipSunk]){
-				if(vertCount == SHIPSIZES[shipSunk] || posY == 9 || opponentBoard[posX][posY + 1] != 'x') {
-					
-					for(int i = 1; i < SHIPSIZES[shipSunk]; i++) {
-						if(posY - i > -1 && opponentBoard[posX][posY - i] == 'x') {
-							opponentBoard[posX][posY - i] = 's';
-						}else {
-							break;
-						}
-					}
-					
-				}else if(vertCount == SHIPSIZES[shipSunk] || posY == 0 || opponentBoard[posX][posY - 1] != 'x'){
-					
-					for(int i = 1; i < SHIPSIZES[shipSunk]; i++) {
-						if(posY + i < 10 && opponentBoard[posX][posY + i] == 'x') {
-							opponentBoard[posX][posY + i] = 's';
-						}else {
-							break;
-						}
+			opponentSunkShips[shipSunk] = true;
+			shipSunkCoords[shipSunk][0] = posX;
+			shipSunkCoords[shipSunk][1] = posY;
+			resolveShip(shipSunk, posX, posY);
+			if(resolvedShip[shipSunk]) {
+				for(int i = 0; i < opponentSunkShips.length; i++) {
+					if(opponentSunkShips[i] && !resolvedShip[i]) {
+						resolveShip(i, shipSunkCoords[i][0],shipSunkCoords[i][1]);
 					}
 				}
 			}
-
+		}
+	}
+	
+	/**
+	 * Checks To See If An Opponent's Sunk Ship's Placement Is Known
+	 * @param shipSunk
+	 * @param posX
+	 * @param posY
+	 */
+	private void resolveShip(int shipSunk, int posX, int posY) {
+		int horCount = 0;
+		int vertCount = 0;
+		for(int i = 1; i < SHIPSIZES[shipSunk]; i++) {
+			if(posX - i > -1 && opponentBoard[posX - i][posY] == 'x') {
+				horCount++;
+			}else {
+				break;
+			}
+		}
+		
+		for(int i = 1; i < SHIPSIZES[shipSunk]; i++) {
+			if(posX + i < 10 && opponentBoard[posX + i][posY] == 'x') {
+				horCount++;
+			}else {
+				break;
+			}
+		}
+		
+		for(int i = 1; i < SHIPSIZES[shipSunk]; i++) {
+			if(posY - i > -1 && opponentBoard[posX][posY - i] == 'x') {
+				vertCount++;
+			}else {
+				break;
+			}
+		}
+		
+		for(int i = 1; i < SHIPSIZES[shipSunk]; i++) {
+			if(posY + i < 10 && opponentBoard[posX][posY + i] == 'x') {
+				vertCount++;
+			}else {
+				break;
+			}
+		}
+		
+		opponentBoard[posX][posY] = 's';
+		
+		if(vertCount < SHIPSIZES[shipSunk]) {
+			if(horCount == SHIPSIZES[shipSunk] || posX == 9 || opponentBoard[posX + 1][posY] != 'x') {
+				
+				for(int i = 1; i < SHIPSIZES[shipSunk]; i++) {
+					if(posX - i > -1 && opponentBoard[posX - i][posY] == 'x') {
+						opponentBoard[posX - i][posY] = 's';
+					}else {
+						break;
+					}
+				}
+				resolvedShip[shipSunk] = true;
+			}
+			if(horCount == SHIPSIZES[shipSunk] || posX == 0 || opponentBoard[posX - 1][posY] != 'x'){
+				
+				for(int i = 1; i < SHIPSIZES[shipSunk]; i++) {
+					if(posX + i < 10 && opponentBoard[posX + i][posY] == 'x') {
+						opponentBoard[posX + i][posY] = 's';
+					}else {
+						break;
+					}
+				}
+				resolvedShip[shipSunk] = true;
+			}
+		}else if(horCount < SHIPSIZES[shipSunk]){
+			if(vertCount == SHIPSIZES[shipSunk] || posY == 9 || opponentBoard[posX][posY + 1] != 'x') {
+				
+				for(int i = 1; i < SHIPSIZES[shipSunk]; i++) {
+					if(posY - i > -1 && opponentBoard[posX][posY - i] == 'x') {
+						opponentBoard[posX][posY - i] = 's';
+					}else {
+						break;
+					}
+				}
+				resolvedShip[shipSunk] = true;
+			}else if(vertCount == SHIPSIZES[shipSunk] || posY == 0 || opponentBoard[posX][posY - 1] != 'x'){
+				
+				for(int i = 1; i < SHIPSIZES[shipSunk]; i++) {
+					if(posY + i < 10 && opponentBoard[posX][posY + i] == 'x') {
+						opponentBoard[posX][posY + i] = 's';
+					}else {
+						break;
+					}
+				}
+				resolvedShip[shipSunk] = true;
+			}
 		}
 	}
 }
