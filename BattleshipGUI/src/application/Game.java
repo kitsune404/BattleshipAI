@@ -79,7 +79,8 @@ public class Game {
 			case -1: System.out.println(coords[0] + "," + coords[1]); return "!?";
 			case 0: return "AI Strikes " + convertCoord(coords[0],coords[1]) + " And Misses";
 			case 1: return "AI Strikes " + convertCoord(coords[0],coords[1]) + " And Hits";
-			default: return "AI Strikes " + convertCoord(coords[0],coords[1]) + " And " + Player.SHIPNAMES[attackType - 2] + " Sunk";
+			default: ai.sunkOpponentShip(attackType - 2,coords[0],coords[1]);
+				return "AI Strikes " + convertCoord(coords[0],coords[1]) + " And " + Player.SHIPNAMES[attackType - 2] + " Sunk";
 		}
 	}
 	

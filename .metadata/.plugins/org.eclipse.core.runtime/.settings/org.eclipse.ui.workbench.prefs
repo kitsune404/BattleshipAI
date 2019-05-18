@@ -1,3 +1,3 @@
 //org.eclipse.ui.commands/state/org.eclipse.ui.navigator.resources.nested.changeProjectPresentation/org.eclipse.ui.commands.radioState=false
-PLUGINS_NOT_ACTIVATED_ON_STARTUP=;org.eclipse.m2e.discovery;
+PLUGINS_NOT_ACTIVATED_ON_STARTUP=org.eclipse.epp.mpc.ui;org.eclipse.equinox.p2.ui.sdk.scheduler;org.eclipse.m2e.discovery;org.eclipse.mylyn.builds.ui;org.eclipse.mylyn.tasks.ui;org.eclipse.mylyn.team.ui;org.eclipse.oomph.ui;org.eclipse.tips.ide;org.eclipse.ui.monitoring;
 eclipse.preferences.version=1
