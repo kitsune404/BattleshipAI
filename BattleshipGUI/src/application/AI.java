@@ -5,7 +5,7 @@ import java.util.Random;
 public class AI extends Player{
 	
 	/** Maximum Available Complexity */
-	public static final int MAXCOMPLEX = 2;
+	public static final int MAXCOMPLEX = 4;
 	
 	/** Int Value Of AI Complexity 0 = Basic, 1 = Low, 2 = Medium, 3 = High */
 	private int complexity;
@@ -16,7 +16,11 @@ public class AI extends Player{
 	/** Keeps Track If AI KNOWS Where A Sunk Ship Was */
 	private boolean[] resolvedShip;
 	
+	/** Coordinate Of Where Opponent Ship Was Sunk */
 	private int[][] shipSunkCoords;
+	
+	/** Number Of Hits The AI Has Made */
+	private int hitsMade;
 	
 	/** RNG That We Will Use */
 	private Random r;
@@ -37,7 +41,10 @@ public class AI extends Player{
 				opponentBoard [i][j] = '~';
 			}
 		}
+		hitsMade = 0;
+		opponentSunkShips = new boolean[5];
 		shipSunkCoords = new int[5][];
+		resolvedShip = new boolean[5];
 		for(int i = 0; i < opponentSunkShips.length; i++) {
 			opponentSunkShips[i] = false;
 			resolvedShip[i] = false;
@@ -76,9 +83,12 @@ public class AI extends Player{
 	 * @return
 	 */
 	public int[] determineMove() {
+		hitsMade++;
 		switch(complexity) {
+			case 4:
+				return complexity4Move();
 			case 3:
-				return complexity3Move();
+				return complexity2Move();
 			case 2:
 				return complexity2Move();
 			case 1:
@@ -124,7 +134,11 @@ public class AI extends Player{
 				}
 			}
 		}
-		return findMaxValue(values);
+		int[] coords = findMaxValue(values);
+		if(coords[0] == -1 || coords[1] == -1) {
+			return getRandomSpace();
+		}
+		return coords;
 	}
 	
 	/**
@@ -135,6 +149,132 @@ public class AI extends Player{
 	 */
 	private int[] complexity2Move() {
 		int[][] values = initValues();
+		calculateLinearValues(values);
+		int[] coords = findMaxValue(values);
+		if(coords[0] == -1 || coords[1] == -1) {
+			return getRandomSpace();
+		}
+		return coords;
+	}
+	
+	/**
+	 * Keeps Track Of Sunk Ships
+	 * And Will Search For Places Where
+	 * The Remaining Ships Can Be Placed
+	 * As A Last Resort
+	 * (Probably Best During Late-Game)
+	 * @return Attack Coordinates
+	 */
+	private int[] complexity4Move() {
+		int[][] values = initValues();
+		calculateLinearValues(values);
+		int[] coords = findMaxValue(values);
+		
+		if(coords[0] == -1 || coords[1] == -1) {
+			if(hitsMade < 20) {
+				return getRandomSpace();
+			}
+			for(int i = 0; i < opponentBoard.length; i++) {
+				for(int j = 0; j < opponentBoard.length; j++) {
+					if(opponentBoard[i][j] == '~') {
+						for(int s = 0; s < SHIPSIZES.length; s++) {
+							if(!opponentSunkShips[s]) {
+								if(i + SHIPSIZES[s] < 11) {
+									boolean isPlacable = true;
+									for(int k = 1; k < SHIPSIZES[s]; k++) {
+										if(opponentBoard[i + k][j] != '~') {
+											isPlacable = false;
+											break;
+										}
+									}
+									if(isPlacable) {
+										for(int k = 0; k < SHIPSIZES[s]; k++) {
+											values[i + k + 1][j + 1]++;
+										}
+										values[i + (SHIPSIZES[s] / 2) + 1][j + 1]++;
+									}
+								}
+								if(j + SHIPSIZES[s] < 11) {
+									boolean isPlacable = true;
+									for(int k = 1; k < SHIPSIZES[s]; k++) {
+										if(opponentBoard[i][j + k] != '~') {
+											isPlacable = false;
+											break;
+										}
+									}
+									if(isPlacable) {
+										for(int k = 0; k < SHIPSIZES[s]; k++) {
+											values[i + 1][j + (SHIPSIZES[s] / 2) + 1]++;
+										}
+										values[i + 1][j + (SHIPSIZES[s] / 2) + 1]++;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			return findMaxValue(values);
+		}
+		return coords;
+	}
+	
+	/**
+	 * Initialize Value Double Array
+	 * @return int[][] values
+	 */
+	private int[][] initValues() {
+		int[][] values = new int[myBoard.length + 2][myBoard.length + 2];
+		for(int i = 0; i < values.length; i++) {
+			for(int j = 0; j < values.length; j++) {
+				values[i][j] = 0;
+			}
+		}
+		return values;
+	}
+	
+	/**
+	 * Returns A Random Available Space
+	 * @return
+	 */
+	private int[] getRandomSpace() {
+		int highValue = 0;
+		int[] coord = {-1,-1};
+		while(highValue == 0) {// If There Is No Optimum Place, Pick A Random Place
+			coord[0] = r.nextInt(opponentBoard.length);
+			coord[1] = r.nextInt(opponentBoard.length);
+			if(opponentBoard[coord[0]][coord[1]] == '~') {
+				highValue = 1;
+			}
+		}
+		return coord;
+	}
+	
+	/**
+	 * Finds The Most Valuable Space Of The opponentBoard
+	 * @param int[][] values
+	 * @return Max Value int[] Coordinate Or {-1,-1} If No Max Value
+	 */
+	private int[] findMaxValue(int[][] values) {
+		int highValue = 0;
+		int[] coord = {-1, -1};
+		for(int i = 1; i < values.length - 1; i++) {
+			for(int j = 1; j < values.length - 1; j++) {
+				if(highValue < values[i][j] && opponentBoard[i-1][j-1] == '~') {
+					highValue = values[i][j];
+					coord[0] = i - 1;
+					coord[1] = j - 1;
+				}
+			}
+		}
+		return coord;
+	}
+	
+	/**
+	 * Adds Value To Spaces Based On Contiguous Lines Of Hits
+	 * @param values
+	 */
+	private void calculateLinearValues(int[][] values) {
 		for(int i = 0; i < opponentBoard.length; i++) {
 			for(int j = 0; j < opponentBoard.length; j++) {
 				if(opponentBoard[i][j] == 'x') {
@@ -165,63 +305,7 @@ public class AI extends Player{
 				}
 			}
 		}
-		return findMaxValue(values);
 	}
-	
-	/**
-	 * Keeps Track Of Sunk Ships
-	 * And Will Search For Places Where
-	 * The Remaining Ships Can Be Placed
-	 * (Probably Best During Late-Game)
-	 * @return Attack Coordinates
-	 */
-	private int[] complexity3Move() {
-		//TODO Make It Search For Feasible Ship Places
-		//Keep Qualities Of complexity2Move
-		return complexity2Move();
-	}
-	
-	/**
-	 * Initialize Value Double Array
-	 * @return int[][] values
-	 */
-	private int[][] initValues() {
-		int[][] values = new int[myBoard.length + 2][myBoard.length + 2];
-		for(int i = 0; i < values.length; i++) {
-			for(int j = 0; j < values.length; j++) {
-				values[i][j] = 0;
-			}
-		}
-		return values;
-	}
-	
-	/**
-	 * Finds The Maximum Value Of A Double Array
-	 * @param int[][] values
-	 * @return int[] coordinate
-	 */
-	private int[] findMaxValue(int[][] values) {
-		int highValue = 0;
-		int[] coord = {-1, -1};
-		for(int i = 1; i < values.length - 1; i++) {
-			for(int j = 1; j < values.length - 1; j++) {
-				if(highValue < values[i][j] && opponentBoard[i-1][j-1] == '~') {
-					highValue = values[i][j];
-					coord[0] = i - 1;
-					coord[1] = j - 1;
-				}
-			}
-		}
-		while(highValue == 0) {// If There Is No Optimum Place, Pick A Random Place
-			coord[0] = r.nextInt(opponentBoard.length);
-			coord[1] = r.nextInt(opponentBoard.length);
-			if(opponentBoard[coord[0]][coord[1]] == '~') {
-				highValue = 1;
-			}
-		}
-		return coord;
-	}
-	
 	
 	/**
 	 * Bookkeeping Where Sunk Opponent Ships Are
